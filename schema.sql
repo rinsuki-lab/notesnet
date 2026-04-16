@@ -11,9 +11,9 @@ CREATE TABLE personas (
     id UUID PRIMARY KEY,
     account_id UUID NOT NULL REFERENCES accounts(id) ON DELETE CASCADE,
     name TEXT,
-    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    UNIQUE NULLS NOT DISTINCT (account_id, name)
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
+CREATE UNIQUE INDEX uq_personas_account_id_name ON personas (account_id, name) NULLS NOT DISTINCT;
 
 CREATE TABLE access_tokens (
     id UUID PRIMARY KEY,

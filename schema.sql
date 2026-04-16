@@ -1,3 +1,5 @@
+CREATE EXTENSION IF NOT EXISTS btree_gin;
+
 CREATE TABLE accounts (
     id UUID PRIMARY KEY,
     name TEXT NOT NULL UNIQUE,
@@ -71,6 +73,8 @@ CREATE TABLE note_revisions (
     written_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     inserted_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
 
+    author_persona_id UUID NOT NULL REFERENCES personas(id),
+
     UNIQUE(note_id, next_revision_id) WHERE next_revision_id IS NOT NULL
     UNIQUE(note_id) WHERE next_revision_id IS NULL
 );
@@ -80,8 +84,12 @@ CREATE TABLE note_relationships (
     id UUID PRIMARY KEY,
     parent_note_id UUID NOT NULL REFERENCES notes(id) ON DELETE CASCADE,
     child_note_id UUID NOT NULL REFERENCES notes(id) ON DELETE CASCADE,
+
     should_listed_as_child BOOLEAN NOT NULL DEFAULT TRUE,
     should_listed_as_parent BOOLEAN NOT NULL DEFAULT TRUE,
+
+    order_child INTEGER
+
     UNIQUE(parent_note_id, child_note_id),
     UNIQUE(min(parent_note_id, child_note_id), max(parent_note_id, child_note_id))
 );

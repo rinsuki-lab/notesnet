@@ -1,4 +1,6 @@
 use axum::{Router, routing::get};
+use sqlx::PgPool;
+mod server;
 
 fn init_registry() {
     use tracing_subscriber::layer::SubscriberExt as _;
@@ -21,8 +23,13 @@ fn init_registry() {
 async fn main() {
     init_registry();
 
+    let state = server::State {
+        db: PgPool::connect(&std::env::var("DATABASE_URL").expect("DATABASE_URL must be set")).await.expect("failed to connect to database"),
+    };
+
     let app = Router::new()
         .route("/", get(|| async { "Hello, World!" }))
+        .with_state(state)
         .layer(
             tower_http::trace::TraceLayer::new_for_http()
                 .make_span_with(|r: &axum::http::Request<_>| {

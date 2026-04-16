@@ -21,10 +21,11 @@ CREATE TABLE access_tokens (
     persona_id UUID REFERENCES personas(id),
     hashed_secret BYTEA NOT NULL,
     description TEXT NOT NULL,
-    is_super_token BOOLEAN NOT NULL DEFAULT FALSE, -- for web interface
+    is_super_token BOOLEAN NOT NULL DEFAULT FALSE,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     revoked_at TIMESTAMPTZ
 );
+COMMENT ON COLUMN access_tokens.is_super_token IS 'Webインターフェース用のトークン (/api/internal/ が使える) かどうか';
 
 CREATE TABLE scopes (
     id UUID PRIMARY KEY,
@@ -62,11 +63,11 @@ CREATE TABLE note_revisions (
     next_revision_id UUID REFERENCES note_revisions(id) ON DELETE SET NULL,
 
     summary TEXT,
-    text_for_search TEXT NOT NULL, -- 全文検索用
+    text_for_search TEXT NOT NULL,
 
     content_type TEXT NOT NULL,
-    attributes JSONB NOT NULL, -- 検索用
-    content JSONB NOT NULL, -- クエリでひっかけないようなデータをここに入れる
+    attributes JSONB NOT NULL,
+    content JSONB NOT NULL,
 
     started_at TIMESTAMPTZ,
     written_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
@@ -74,6 +75,9 @@ CREATE TABLE note_revisions (
 
     author_persona_id UUID NOT NULL REFERENCES personas(id)
 );
+COMMENT ON COLUMN note_revisions.text_for_search IS '全文検索用のテキスト';
+COMMENT ON COLUMN note_revisions.attributes IS 'インデックスされてほしいデータ (クエリしたいデータ) を入れる。中身は content_type 依存';
+COMMENT ON COLUMN note_revisions.content IS 'クエリされることを想定していないデータを入れる。中身は content_type 依存';
 CREATE UNIQUE INDEX uq_note_revisions_next ON note_revisions (note_id, next_revision_id) WHERE next_revision_id IS NOT NULL;
 CREATE UNIQUE INDEX uq_note_revisions_latest ON note_revisions (note_id) WHERE next_revision_id IS NULL;
 CREATE INDEX idx_note_revisions_attributes ON note_revisions USING GIN (content_type, (next_revision_id IS NULL), attributes);

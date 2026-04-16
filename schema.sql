@@ -12,8 +12,7 @@ CREATE TABLE personas (
     account_id UUID NOT NULL REFERENCES accounts(id) ON DELETE CASCADE,
     name TEXT,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    UNIQUE(account_id, name) WHERE name IS NOT NULL
-    UNIQUE(account_id) WHERE name IS NULL
+    UNIQUE NULLS NOT DISTINCT (account_id, name)
 );
 
 CREATE TABLE access_tokens (
@@ -22,8 +21,8 @@ CREATE TABLE access_tokens (
     persona_id UUID REFERENCES personas(id),
     hashed_secret BYTEA NOT NULL,
     description TEXT NOT NULL,
-    is_super_token BOOLEAN NOT NULL DEFAULT FALSE COMMENT 'for web interface',
-    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    is_super_token BOOLEAN NOT NULL DEFAULT FALSE, -- for web interface
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     revoked_at TIMESTAMPTZ
 );
 
@@ -53,9 +52,9 @@ CREATE TABLE notes (
     external_id TEXT,
 
     -- どっちかがあるならもう片方も必須
-    CHECK ((external_id IS NULL OR external_service IS NOT NULL) AND (external_service IS NULL OR external_id IS NOT NULL)),
-    UNIQUE (external_service, external_id) WHERE external_id IS NOT NULL
+    CHECK ((external_id IS NULL OR external_service IS NOT NULL) AND (external_service IS NULL OR external_id IS NOT NULL))
 );
+CREATE UNIQUE INDEX uq_notes_external_service_and_id ON notes (external_service, external_id) WHERE external_id IS NOT NULL;
 
 CREATE TABLE note_revisions (
     id UUID PRIMARY KEY,
@@ -73,12 +72,11 @@ CREATE TABLE note_revisions (
     written_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     inserted_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
 
-    author_persona_id UUID NOT NULL REFERENCES personas(id),
-
-    UNIQUE(note_id, next_revision_id) WHERE next_revision_id IS NOT NULL
-    UNIQUE(note_id) WHERE next_revision_id IS NULL
+    author_persona_id UUID NOT NULL REFERENCES personas(id)
 );
-CREATE INDEX idx_note_revisions_attributes ON note_revisions USING GIN (content_type, next_revision_id IS NULL, attributes);
+CREATE UNIQUE INDEX uq_note_revisions_next ON note_revisions (note_id, next_revision_id) WHERE next_revision_id IS NOT NULL;
+CREATE UNIQUE INDEX uq_note_revisions_latest ON note_revisions (note_id) WHERE next_revision_id IS NULL;
+CREATE INDEX idx_note_revisions_attributes ON note_revisions USING GIN (content_type, (next_revision_id IS NULL), attributes);
 
 CREATE TABLE note_relationships (
     id UUID PRIMARY KEY,
@@ -88,8 +86,8 @@ CREATE TABLE note_relationships (
     should_listed_as_child BOOLEAN NOT NULL DEFAULT TRUE,
     should_listed_as_parent BOOLEAN NOT NULL DEFAULT TRUE,
 
-    order_child INTEGER
+    order_child INTEGER,
 
-    UNIQUE(parent_note_id, child_note_id),
-    UNIQUE(min(parent_note_id, child_note_id), max(parent_note_id, child_note_id))
+    UNIQUE(parent_note_id, child_note_id)
 );
+CREATE UNIQUE INDEX uq_note_relationships_undirected ON note_relationships (LEAST(parent_note_id, child_note_id), GREATEST(parent_note_id, child_note_id));

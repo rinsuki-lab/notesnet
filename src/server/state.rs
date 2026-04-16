@@ -1,4 +1,4 @@
 #[derive(Clone)]
-pub struct State {
+pub struct AppState {
     pub db: sqlx::PgPool,
 }

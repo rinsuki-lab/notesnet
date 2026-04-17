@@ -1,5 +1,16 @@
 CREATE EXTENSION IF NOT EXISTS btree_gin;
 
+-- Workaround of https://github.com/stripe/pg-schema-diff/issues/161
+CREATE TABLE "_sqlx_migrations" (
+	"version" bigint NOT NULL PRIMARY KEY,
+	"installed_on" timestamp with time zone DEFAULT now() NOT NULL,
+	"execution_time" bigint NOT NULL,
+	"success" boolean NOT NULL,
+	"description" text NOT NULL,
+	"checksum" bytea NOT NULL
+);
+
+
 CREATE TABLE accounts (
     id UUID PRIMARY KEY,
     name TEXT NOT NULL UNIQUE,

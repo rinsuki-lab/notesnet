@@ -63,21 +63,26 @@ if __name__ == '__main__':
 
     prefix_str = datetime.datetime.now().strftime("%Y%m%d%H%M%S_") + sys.argv[1]
 
-
+    p = subprocess.run([
+        "pg-schema-diff", "plan",
+        "--from-dsn", db_url,
+        "--to-dir", "./schema.sql",
+        *PG_SCHEMA_DIFF_OPTIONS,
+    ], stdout=subprocess.PIPE, check=True)
+    p = clean_sql(p.stdout.decode())
+    if p.strip() == "":
+        print("No changes")
+        exit(0)
     with open(f"migrations/{prefix_str}.up.sql", "w") as f:
-        p = subprocess.run([
-            "pg-schema-diff", "plan",
-            "--from-dsn", db_url,
-            "--to-dir", "./schema.sql",
-            *PG_SCHEMA_DIFF_OPTIONS,
-        ], stdout=subprocess.PIPE, check=True)
-        f.write(clean_sql(p.stdout.decode()))
+        f.write(p)
 
-    with open(f"migrations/{prefix_str}.down.sql", "wb") as f:
-        p = subprocess.run([
-            "pg-schema-diff", "plan",
-            "--from-dir", "./schema.sql",
-            "--to-dsn", db_url,
-            *PG_SCHEMA_DIFF_OPTIONS,
-        ], stdout=subprocess.PIPE, check=True)
-        f.write(clean_sql(p.stdout.decode()).encode())
+    p = subprocess.run([
+        "pg-schema-diff", "plan",
+        "--from-dir", "./schema.sql",
+        "--to-dsn", db_url,
+        *PG_SCHEMA_DIFF_OPTIONS,
+    ], stdout=subprocess.PIPE, check=True)
+    p = clean_sql(p.stdout.decode())
+    assert p.strip() != ""
+    with open(f"migrations/{prefix_str}.down.sql", "w") as f:
+        f.write(p)

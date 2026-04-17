@@ -1,0 +1,21 @@
+on:
+  push:
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:18
+        ports:
+        - 5432:5432
+        env:
+          POSTGRES_PASSWORD: password
+    env:
+      DATABASE_URL: postgres://postgres:password@localhost:5432/postgres
+    steps:
+    - uses: actions/checkout@v6
+    - run: brew install sqlx-cli pg-schema-diff
+    - run: sqlx migrate run
+    - run: ./generate_migrate.py check_diffes
+    - run: git add -A && git diff --exit-code

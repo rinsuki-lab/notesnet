@@ -3,7 +3,7 @@ on:
 
 jobs:
   ci:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     services:
       postgres:
         image: postgres:18

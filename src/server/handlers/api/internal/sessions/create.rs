@@ -82,13 +82,13 @@ pub async fn create_session(
     OsRng.fill_bytes(&mut random_bytes);
     let access_token = format!("{}.{}", token_id, hex::encode(random_bytes));
 
-    let hashed_secret = Sha256::digest(access_token.as_bytes()).to_vec();
+    let hashed_token = Sha256::digest(access_token.as_bytes()).to_vec();
 
     sqlx::query!(
-        "INSERT INTO access_tokens(id, account_id, persona_id, hashed_secret, description, is_super_token) VALUES ($1, $2, NULL, $3, 'Web Session', TRUE)",
+        "INSERT INTO access_tokens(id, account_id, persona_id, hashed_token, description, is_super_token) VALUES ($1, $2, NULL, $3, 'Web Session', TRUE)",
         token_id,
         account.id,
-        hashed_secret,
+        hashed_token,
     )
     .execute(&state.db)
     .await

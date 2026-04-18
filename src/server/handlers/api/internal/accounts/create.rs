@@ -4,6 +4,7 @@ use argon2::{
 };
 use axum::{Json, extract::State, response::IntoResponse};
 
+use crate::constants::PASSWORD_MAX_LENGTH;
 use crate::server::AppState;
 
 #[derive(serde::Deserialize)]
@@ -63,7 +64,7 @@ pub async fn create_account(
     if !is_valid_username(&body.username) {
         return Err(CreateAccountError::InvalidUsername);
     }
-    if !(16..=128).contains(&body.password.len()) {
+    if !(16..=PASSWORD_MAX_LENGTH).contains(&body.password.len()) {
         return Err(CreateAccountError::InvalidPassword);
     }
 

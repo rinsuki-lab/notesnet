@@ -1,4 +1,5 @@
 use sqlx::PgPool;
+mod constants;
 mod server;
 
 fn init_registry() {

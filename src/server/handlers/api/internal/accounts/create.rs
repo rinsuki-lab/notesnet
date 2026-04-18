@@ -7,7 +7,7 @@ use axum::{Json, extract::State, response::IntoResponse};
 use crate::constants::PASSWORD_MAX_LENGTH;
 use crate::server::AppState;
 
-#[derive(serde::Deserialize)]
+#[derive(serde::Deserialize, utoipa::ToSchema)]
 pub struct CreateUserRequest {
     username: String,
     password: String,
@@ -57,6 +57,17 @@ fn is_valid_username(username: &str) -> bool {
     true
 }
 
+#[utoipa::path(
+    post,
+    path = "/api/internal/accounts/create",
+    request_body = CreateUserRequest,
+    responses(
+        (status = 200, description = "Account created"),
+        (status = 409, description = "Username already in use"),
+        (status = 422, description = "Invalid username or password"),
+        (status = 500, description = "Internal server error"),
+    )
+)]
 pub async fn create_account(
     State(state): State<AppState>,
     Json(body): Json<CreateUserRequest>,

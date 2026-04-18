@@ -3,7 +3,7 @@ use axum::{Json, extract::State, response::IntoResponse};
 use crate::server::AppState;
 use crate::server::extractors::MaybeAccessToken;
 
-#[derive(serde::Serialize)]
+#[derive(serde::Serialize, utoipa::ToSchema)]
 pub struct GetMeResponse {
     id: String,
     name: String,
@@ -27,6 +27,18 @@ impl IntoResponse for GetMeError {
     }
 }
 
+#[utoipa::path(
+    get,
+    path = "/api/internal/accounts/me",
+    responses(
+        (status = 200, description = "Current account info", body = GetMeResponse),
+        (status = 401, description = "Unauthorized"),
+        (status = 500, description = "Internal server error"),
+    ),
+    security(
+        ("bearer" = [])
+    )
+)]
 pub async fn get_me(
     State(state): State<AppState>,
     MaybeAccessToken(token): MaybeAccessToken,

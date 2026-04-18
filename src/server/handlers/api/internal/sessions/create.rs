@@ -8,13 +8,13 @@ use sha2::{Digest, Sha256};
 use crate::constants::PASSWORD_MAX_LENGTH;
 use crate::server::AppState;
 
-#[derive(serde::Deserialize)]
+#[derive(serde::Deserialize, utoipa::ToSchema)]
 pub struct CreateSessionRequest {
     username: String,
     password: String,
 }
 
-#[derive(serde::Serialize)]
+#[derive(serde::Serialize, utoipa::ToSchema)]
 pub struct CreateSessionResponse {
     access_token: String,
 }
@@ -39,6 +39,16 @@ impl IntoResponse for CreateSessionError {
     }
 }
 
+#[utoipa::path(
+    post,
+    path = "/api/internal/sessions/create",
+    request_body = CreateSessionRequest,
+    responses(
+        (status = 200, description = "Session created", body = CreateSessionResponse),
+        (status = 401, description = "Invalid credentials"),
+        (status = 500, description = "Internal server error"),
+    )
+)]
 pub async fn create_session(
     State(state): State<AppState>,
     Json(body): Json<CreateSessionRequest>,

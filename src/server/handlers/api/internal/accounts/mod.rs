@@ -2,8 +2,8 @@ use axum::routing::{get, post};
 
 use crate::server::AppState;
 
-mod create;
-mod me;
+pub mod create;
+pub mod me;
 
 pub fn router() -> axum::Router<AppState> {
     axum::Router::new()

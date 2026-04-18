@@ -1,3 +1,4 @@
+pub mod extractors;
 mod handlers;
 mod state;
 pub use state::AppState;

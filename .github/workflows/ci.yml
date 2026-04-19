@@ -23,5 +23,5 @@ jobs:
     - run: ./generate_migrate.py check_diffes
     - run: git add -A && git diff --exit-code
     - run: corepack enable && pnpm install
-    - run: pnpm dev:prepare
+    - run: pnpm dev:refresh
     - run: git add -A && git diff --exit-code

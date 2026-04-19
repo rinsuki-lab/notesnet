@@ -22,6 +22,6 @@ jobs:
     - run: sqlx migrate run
     - run: ./generate_migrate.py check_diffes
     - run: git add -A && git diff --exit-code
-    - run: pnpm install
+    - run: corepack enable && pnpm install
     - run: pnpm dev:prepare
     - run: git add -A && git diff --exit-code

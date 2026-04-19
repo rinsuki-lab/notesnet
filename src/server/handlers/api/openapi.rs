@@ -9,6 +9,7 @@ use super::v1;
     paths(
         accounts::create::create_account,
         v1::me::get_me,
+        v1::notes::create::create_note,
         sessions::create::create_session,
     ),
     modifiers(&SecurityAddon),

@@ -5,6 +5,9 @@
  * OpenAPI spec version: 0.1.0
  */
 
+export * from './createNoteParent';
+export * from './createNoteRequest';
+export * from './createNoteResponse';
 export * from './createSessionRequest';
 export * from './createSessionResponse';
 export * from './createUserRequest';

@@ -66,7 +66,7 @@ COMMENT ON COLUMN scope_personas.can_add_their_notes_to_child IS 'persona_id の
 CREATE TABLE notes (
     id UUID PRIMARY KEY,
     author_persona_id UUID NOT NULL REFERENCES personas(id),
-    scope_id UUID NOT NULL,
+    scope_id UUID NOT NULL REFERENCES scopes(id),
     external_service TEXT,
     external_id TEXT,
 

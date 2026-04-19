@@ -2,7 +2,7 @@ use axum::extract::FromRequestParts;
 use axum::http::request::Parts;
 use sha2::{Digest, Sha256};
 
-use super::AppState;
+use crate::server::AppState;
 
 pub struct AccessToken {
     pub account_id: uuid::Uuid,

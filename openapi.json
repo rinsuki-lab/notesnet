@@ -107,10 +107,153 @@
           }
         ]
       }
+    },
+    "/api/v1/notes": {
+      "post": {
+        "tags": [
+          "v1::notes::create"
+        ],
+        "operationId": "create_note",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateNoteRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Note created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateNoteResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid X-NotesNet-Persona header"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Persona mismatch or forbidden"
+          },
+          "404": {
+            "description": "Scope, parent note, or persona not found"
+          },
+          "422": {
+            "description": "Duplicate parent"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
     }
   },
   "components": {
     "schemas": {
+      "CreateNoteParent": {
+        "type": "object",
+        "required": [
+          "parent_note_id"
+        ],
+        "properties": {
+          "order_child": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int32"
+          },
+          "parent_note_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "should_listed_as_child": {
+            "type": "boolean"
+          },
+          "should_listed_as_parent": {
+            "type": "boolean"
+          }
+        }
+      },
+      "CreateNoteRequest": {
+        "type": "object",
+        "required": [
+          "scope_id",
+          "text_for_search",
+          "content_type",
+          "attributes",
+          "content"
+        ],
+        "properties": {
+          "attributes": {},
+          "content": {},
+          "content_type": {
+            "type": "string"
+          },
+          "parents": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CreateNoteParent"
+            }
+          },
+          "scope_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "started_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "summary": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "text_for_search": {
+            "type": "string"
+          },
+          "written_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          }
+        }
+      },
+      "CreateNoteResponse": {
+        "type": "object",
+        "required": [
+          "note_id",
+          "note_revision_id"
+        ],
+        "properties": {
+          "note_id": {
+            "type": "string"
+          },
+          "note_revision_id": {
+            "type": "string"
+          }
+        }
+      },
       "CreateSessionRequest": {
         "type": "object",
         "required": [

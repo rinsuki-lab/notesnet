@@ -1,8 +1,7 @@
-use axum::{Json, response::IntoResponse};
 use utoipa::OpenApi;
 
-use super::accounts;
-use super::sessions;
+use super::internal::accounts;
+use super::internal::sessions;
 
 #[derive(OpenApi)]
 #[openapi(
@@ -13,7 +12,7 @@ use super::sessions;
     ),
     modifiers(&SecurityAddon),
 )]
-struct ApiDoc;
+pub struct ApiDoc;
 
 struct SecurityAddon;
 
@@ -30,8 +29,4 @@ impl utoipa::Modify for SecurityAddon {
             );
         }
     }
-}
-
-pub async fn openapi_json() -> impl IntoResponse {
-    Json(ApiDoc::openapi())
 }

@@ -79,7 +79,7 @@ COMMENT ON TABLE notes IS 'ID管理・権限管理用のテーブル。実際の
 CREATE TABLE note_revisions (
     id UUID PRIMARY KEY,
     note_id UUID NOT NULL REFERENCES notes(id) ON DELETE CASCADE,
-    writer_persona_id UUID NOT NULL REFERENCES personas(id),
+    author_persona_id UUID NOT NULL REFERENCES personas(id),
     next_revision_id UUID REFERENCES note_revisions(id) ON DELETE SET NULL,
 
     summary TEXT,
@@ -91,9 +91,8 @@ CREATE TABLE note_revisions (
 
     started_at TIMESTAMPTZ,
     written_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    inserted_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    inserted_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 
-    author_persona_id UUID NOT NULL REFERENCES personas(id)
 );
 COMMENT ON COLUMN note_revisions.text_for_search IS '全文検索用のテキスト';
 COMMENT ON COLUMN note_revisions.attributes IS 'インデックスされてほしいデータ (クエリしたいデータ) を入れる。中身は content_type 依存';

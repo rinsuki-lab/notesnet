@@ -8,4 +8,5 @@
 export * from './createSessionRequest';
 export * from './createSessionResponse';
 export * from './createUserRequest';
+export * from './getMePersona';
 export * from './getMeResponse';

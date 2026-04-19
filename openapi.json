@@ -41,37 +41,6 @@
         }
       }
     },
-    "/api/internal/accounts/me": {
-      "get": {
-        "tags": [
-          "accounts::me"
-        ],
-        "operationId": "get_me",
-        "responses": {
-          "200": {
-            "description": "Current account info",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/GetMeResponse"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "500": {
-            "description": "Internal server error"
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ]
-      }
-    },
     "/api/internal/sessions/create": {
       "post": {
         "tags": [
@@ -106,6 +75,37 @@
             "description": "Internal server error"
           }
         }
+      }
+    },
+    "/api/v1/me": {
+      "get": {
+        "tags": [
+          "v1::me"
+        ],
+        "operationId": "get_me",
+        "responses": {
+          "200": {
+            "description": "Current account info",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetMeResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
       }
     }
   },
@@ -152,11 +152,29 @@
           }
         }
       },
+      "GetMePersona": {
+        "type": "object",
+        "required": [
+          "id"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      },
       "GetMeResponse": {
         "type": "object",
         "required": [
           "id",
-          "name"
+          "name",
+          "personas"
         ],
         "properties": {
           "id": {
@@ -164,6 +182,12 @@
           },
           "name": {
             "type": "string"
+          },
+          "personas": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GetMePersona"
+            }
           }
         }
       }

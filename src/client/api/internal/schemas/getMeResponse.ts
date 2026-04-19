@@ -4,8 +4,10 @@
  * notesnet
  * OpenAPI spec version: 0.1.0
  */
+import type { GetMePersona } from './getMePersona';
 
 export interface GetMeResponse {
   id: string;
   name: string;
+  personas: GetMePersona[];
 }

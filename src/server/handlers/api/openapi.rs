@@ -2,12 +2,13 @@ use utoipa::OpenApi;
 
 use super::internal::accounts;
 use super::internal::sessions;
+use super::v1;
 
 #[derive(OpenApi)]
 #[openapi(
     paths(
         accounts::create::create_account,
-        accounts::me::get_me,
+        v1::me::get_me,
         sessions::create::create_session,
     ),
     modifiers(&SecurityAddon),

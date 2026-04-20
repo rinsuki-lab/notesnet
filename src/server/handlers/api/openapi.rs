@@ -8,7 +8,8 @@ use super::v1;
 #[openapi(
     paths(
         accounts::create::create_account,
-        v1::me::get_me,
+        v1::me::get::get_me,
+        v1::me::scopes::get_me_scopes,
         v1::notes::create::create_note,
         v1::notes::list::list_notes,
         sessions::create::create_session,

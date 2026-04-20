@@ -30,6 +30,7 @@ import type {
   CreateSessionResponse,
   CreateUserRequest,
   GetMeResponse,
+  GetMeScopesResponse,
   ListNotesParams,
   ListNotesResponse
 } from './schemas';
@@ -335,6 +336,140 @@ export function useGetMe<TData = Awaited<ReturnType<typeof getMe>>, TError = voi
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
   const queryOptions = getGetMeQueryOptions(options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+
+export type getMeScopesResponse200 = {
+  data: GetMeScopesResponse
+  status: 200
+}
+
+export type getMeScopesResponse400 = {
+  data: void
+  status: 400
+}
+
+export type getMeScopesResponse401 = {
+  data: void
+  status: 401
+}
+
+export type getMeScopesResponse403 = {
+  data: void
+  status: 403
+}
+
+export type getMeScopesResponse404 = {
+  data: void
+  status: 404
+}
+
+export type getMeScopesResponse500 = {
+  data: void
+  status: 500
+}
+
+export type getMeScopesResponseSuccess = (getMeScopesResponse200) & {
+  headers: Headers;
+};
+export type getMeScopesResponseError = (getMeScopesResponse400 | getMeScopesResponse401 | getMeScopesResponse403 | getMeScopesResponse404 | getMeScopesResponse500) & {
+  headers: Headers;
+};
+
+export type getMeScopesResponse = (getMeScopesResponseSuccess | getMeScopesResponseError)
+
+export const getGetMeScopesUrl = () => {
+
+
+
+
+  return `/api/v1/me/scopes`
+}
+
+export const getMeScopes = async ( options?: RequestInit): Promise<getMeScopesResponse> => {
+
+  return customFetch<getMeScopesResponse>(getGetMeScopesUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetMeScopesQueryKey = () => {
+    return [
+    `/api/v1/me/scopes`
+    ] as const;
+    }
+
+
+export const getGetMeScopesQueryOptions = <TData = Awaited<ReturnType<typeof getMeScopes>>, TError = void>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getMeScopes>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetMeScopesQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getMeScopes>>> = ({ signal }) => getMeScopes({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getMeScopes>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetMeScopesQueryResult = NonNullable<Awaited<ReturnType<typeof getMeScopes>>>
+export type GetMeScopesQueryError = void
+
+
+export function useGetMeScopes<TData = Awaited<ReturnType<typeof getMeScopes>>, TError = void>(
+  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getMeScopes>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getMeScopes>>,
+          TError,
+          Awaited<ReturnType<typeof getMeScopes>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetMeScopes<TData = Awaited<ReturnType<typeof getMeScopes>>, TError = void>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getMeScopes>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getMeScopes>>,
+          TError,
+          Awaited<ReturnType<typeof getMeScopes>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetMeScopes<TData = Awaited<ReturnType<typeof getMeScopes>>, TError = void>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getMeScopes>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+
+export function useGetMeScopes<TData = Awaited<ReturnType<typeof getMeScopes>>, TError = void>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getMeScopes>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetMeScopesQueryOptions(options)
 
   const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 

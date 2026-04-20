@@ -109,6 +109,80 @@
       }
     },
     "/api/v1/notes": {
+      "get": {
+        "tags": [
+          "v1::notes::list"
+        ],
+        "operationId": "list_notes",
+        "parameters": [
+          {
+            "name": "order_by",
+            "in": "query",
+            "description": "Sort order field (default: written_at)",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/ListNotesOrderBy"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Number of items per page (default: 20, max: 100)",
+            "required": false,
+            "schema": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "format": "int64"
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "description": "Pagination cursor (obtained from next_cursor / prev_cursor in response)",
+            "required": false,
+            "schema": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of notes",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListNotesResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid cursor or query parameters"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Persona mismatch"
+          },
+          "404": {
+            "description": "Persona not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
       "post": {
         "tags": [
           "v1::notes::create"
@@ -331,6 +405,101 @@
             "items": {
               "$ref": "#/components/schemas/GetMePersona"
             }
+          }
+        }
+      },
+      "ListNotesItem": {
+        "type": "object",
+        "required": [
+          "note_id",
+          "revision_id",
+          "note_author_persona_id",
+          "revision_author_persona_id",
+          "scope_id",
+          "text_for_search",
+          "content_type",
+          "attributes",
+          "content",
+          "written_at",
+          "inserted_at"
+        ],
+        "properties": {
+          "attributes": {},
+          "content": {},
+          "content_type": {
+            "type": "string"
+          },
+          "inserted_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "note_author_persona_id": {
+            "type": "string"
+          },
+          "note_id": {
+            "type": "string"
+          },
+          "revision_author_persona_id": {
+            "type": "string"
+          },
+          "revision_id": {
+            "type": "string"
+          },
+          "scope_id": {
+            "type": "string"
+          },
+          "started_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "summary": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "text_for_search": {
+            "type": "string"
+          },
+          "written_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "ListNotesOrderBy": {
+        "type": "string",
+        "enum": [
+          "written_at",
+          "inserted_at"
+        ]
+      },
+      "ListNotesResponse": {
+        "type": "object",
+        "required": [
+          "items"
+        ],
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ListNotesItem"
+            }
+          },
+          "next_cursor": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "prev_cursor": {
+            "type": [
+              "string",
+              "null"
+            ]
           }
         }
       }

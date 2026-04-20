@@ -10,7 +10,13 @@ use super::v1;
         accounts::create::create_account,
         v1::me::get_me,
         v1::notes::create::create_note,
+        v1::notes::list::list_notes,
         sessions::create::create_session,
+    ),
+    components(
+        schemas(
+            v1::notes::list::ListNotesOrderBy,
+        )
     ),
     modifiers(&SecurityAddon),
 )]

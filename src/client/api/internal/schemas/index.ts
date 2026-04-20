@@ -13,3 +13,7 @@ export * from './createSessionResponse';
 export * from './createUserRequest';
 export * from './getMePersona';
 export * from './getMeResponse';
+export * from './listNotesItem';
+export * from './listNotesOrderBy';
+export * from './listNotesParams';
+export * from './listNotesResponse';

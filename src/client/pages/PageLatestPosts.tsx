@@ -1,5 +1,6 @@
+import { Link } from "react-router"
 import { useListNotes } from "../api/internal"
-import { noteRenderers } from "../note-renderers"
+import { NoteContentRenderer } from "../components/NoteContentRenderer"
 
 export function PageLatestPosts() {
     const posts = useListNotes()
@@ -11,13 +12,9 @@ export function PageLatestPosts() {
     return <div>
         {posts.data.data.items.map(item => {
             return <div key={item.revision_id}>
-                <p>{item.note_id}・{item.content_type}</p>
+                <p><Link to={`/notes/${item.note_id}`}>{item.written_at}</Link>・{item.content_type}</p>
                 <p>{item.summary}</p>
-                {
-                    item.content_type in noteRenderers
-                        ? noteRenderers[item.content_type](item)
-                        : <p>Unsupported content type: {item.content_type}</p>
-                }
+                <NoteContentRenderer note={item} />
             </div>
         })}
     </div>

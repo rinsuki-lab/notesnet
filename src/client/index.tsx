@@ -1,9 +1,10 @@
 import { createRoot } from "react-dom/client"
 import { BrowserRouter } from "react-router"
-import { useCreateNote, useCreateSession, useGetMe, useGetMeScopes, useListNotes } from "./api/internal"
+import { getListNotesQueryKey, useCreateNote, useCreateSession, useGetMe, useGetMeScopes, useListNotes } from "./api/internal"
 import { QueryClientProvider } from "@tanstack/react-query"
 import { queryClient } from "./api/query-client"
-import { useEffect, useState } from "react"
+import { JSX, useCallback, useEffect, useState } from "react"
+import { ListNotesItem } from "./api/internal/schemas"
 
 function PageLogin() {
     const login = useCreateSession({
@@ -34,6 +35,10 @@ function PageLogin() {
     </div>
 }
 
+const renderers = {
+    "text/plain": (note: ListNotesItem) => <p>{note.content.text}</p>
+} satisfies Record<string, (note: ListNotesItem) => JSX.Element>
+
 function PageLatestPosts() {
     const posts = useListNotes()
 
@@ -46,16 +51,31 @@ function PageLatestPosts() {
             return <div key={item.revision_id}>
                 <p>{item.note_id}・{item.content_type}</p>
                 <p>{item.summary}</p>
+                {
+                    item.content_type in renderers
+                        ? renderers[item.content_type](item)
+                        : <p>Unsupported content type: {item.content_type}</p>
+                }
             </div>
         })}
     </div>
 }
 
 function ComposePost() {
-    const scopes = useGetMeScopes()
-    const createPost = useCreateNote({})
     const [selectedScopeId, setSelectedScopeId] = useState("")
     const [text, setText] = useState("")
+
+    const scopes = useGetMeScopes()
+    const createPost = useCreateNote({
+        mutation: {
+            onSuccess() {
+                setText("")
+                queryClient.invalidateQueries({
+                    queryKey: getListNotesQueryKey(),
+                })
+            }
+        }
+    })
 
     useEffect(() => {
         if (scopes.data?.status !== 200) return
@@ -63,6 +83,24 @@ function ComposePost() {
         if (scopes.data.data.items.some(item => item.id === selectedScopeId)) return
         setSelectedScopeId(scopes.data.data.items[0].id)
     }, [selectedScopeId, scopes.data?.status, scopes.data?.data])
+
+    const submit = useCallback(() => {
+        createPost.mutate({
+            data: {
+                content: {
+                    text,
+                },
+                attributes: {},
+                content_type: "text/plain",
+                scope_id: selectedScopeId!,
+                text_for_search: text,
+                parents: undefined,
+                started_at: null,
+                summary: null,
+                written_at: null,
+            }
+        })
+    }, [text, selectedScopeId, createPost])
 
     if (scopes.data?.status !== 200) {
         return <div>{":("} {JSON.stringify(scopes.data)}</div>
@@ -78,24 +116,12 @@ function ComposePost() {
         }}>
             {scopes.data?.data.items.map(scope => <option key={scope.id} value={scope.id}>{scope.name}</option>)}
         </select>
-        <textarea value={text} onInput={e => setText(e.currentTarget.value)} />
-        <button onClick={() => {
-            createPost.mutate({
-                data: {
-                    content: {
-                        text,
-                    },
-                    attributes: {},
-                    content_type: "text/plain",
-                    scope_id: selectedScopeId!,
-                    text_for_search: text,
-                    parents: undefined,
-                    started_at: null,
-                    summary: null,
-                    written_at: null,
-                }
-            })
-        }} disabled={createPost.isPending || !selectedScopeId}>Send</button>
+        <textarea value={text} onInput={e => setText(e.currentTarget.value)} onKeyDown={e => {
+            if ((e.metaKey || e.ctrlKey) && e.code == "Enter") {
+                submit()
+            }
+        }}/>
+        <button onClick={submit} disabled={createPost.isPending || !selectedScopeId}>Send</button>
     </div>
 }
 

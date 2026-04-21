@@ -12,6 +12,7 @@ export function PageNoteDetail() {
 
     return <div>
         <h2>{note.data.data.summary}</h2>
+        <p>{note.data.data.written_at}</p>
         <NoteContentRenderer note={note.data.data} />
     </div>
 }

@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev:refresh": "cargo run -- --output-openapi-and-exit > openapi.json && orval"
+    "dev:refresh": "cargo run -- --output-openapi-and-exit > openapi.json && rm -r src/client/api/internal/ && orval"
   },
   "keywords": [],
   "author": "",

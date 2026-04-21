@@ -274,6 +274,58 @@
           }
         ]
       }
+    },
+    "/api/v1/notes/{note_id}": {
+      "get": {
+        "tags": [
+          "v1::notes::get"
+        ],
+        "operationId": "get_note",
+        "parameters": [
+          {
+            "name": "note_id",
+            "in": "path",
+            "description": "Note ID",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Note",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListNotesItem"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid note_id or X-NotesNet-Persona header"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Persona mismatch"
+          },
+          "404": {
+            "description": "Note or persona not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
     }
   },
   "components": {

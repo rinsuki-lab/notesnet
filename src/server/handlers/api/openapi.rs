@@ -11,6 +11,7 @@ use super::v1;
         v1::me::get::get_me,
         v1::me::scopes::get_me_scopes,
         v1::notes::create::create_note,
+        v1::notes::get::get_note,
         v1::notes::list::list_notes,
         sessions::create::create_session,
     ),

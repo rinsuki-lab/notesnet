@@ -76,7 +76,10 @@ struct MemberScopeRow {
 )]
 pub async fn get_me_scopes(
     State(state): State<AppState>,
-    ResolvedPersona { token: _, persona_id }: ResolvedPersona,
+    ResolvedPersona {
+        token: _,
+        persona_id,
+    }: ResolvedPersona,
 ) -> Result<Json<GetMeScopesResponse>, GetMeScopesError> {
     let owned_rows = sqlx::query_as!(
         OwnedScopeRow,

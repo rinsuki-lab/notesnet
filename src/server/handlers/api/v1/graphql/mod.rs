@@ -3,6 +3,7 @@ use axum::extract::State;
 use crate::server::{AppState, extractors::ResolvedPersona};
 
 mod query;
+mod types;
 
 pub fn router() -> axum::Router<AppState> {
     let schema = async_graphql::Schema::build(

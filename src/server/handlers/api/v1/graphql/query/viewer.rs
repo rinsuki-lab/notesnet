@@ -1,5 +1,6 @@
 use chrono::{DateTime, Utc};
 
+use super::super::types::ScopePermissions;
 use crate::server::{AppState, extractors::ResolvedPersona};
 
 struct Viewer {
@@ -8,14 +9,7 @@ struct Viewer {
     persona_id: uuid::Uuid,
 }
 
-#[derive(async_graphql::SimpleObject)]
-struct ScopePermissions {
-    can_read_note_revisions: bool,
-    can_modify_notes: bool,
-    can_add_their_notes_to_child: bool,
-}
-
-struct Scope {
+struct ViewerScope {
     id: uuid::Uuid,
     name: String,
     permissions: ScopePermissions,
@@ -23,7 +17,7 @@ struct Scope {
 }
 
 #[async_graphql::Object]
-impl Scope {
+impl ViewerScope {
     async fn id(&self) -> String {
         self.id.to_string()
     }
@@ -47,7 +41,10 @@ impl Viewer {
         &self.name
     }
 
-    async fn scopes(&self, ctx: &async_graphql::Context<'_>) -> async_graphql::Result<Vec<Scope>> {
+    async fn scopes(
+        &self,
+        ctx: &async_graphql::Context<'_>,
+    ) -> async_graphql::Result<Vec<ViewerScope>> {
         let state = ctx.data_unchecked::<AppState>();
         let persona_id = self.persona_id;
 
@@ -114,21 +111,17 @@ impl Viewer {
             async_graphql::Error::new("Internal server error")
         })?;
 
-        let mut items: Vec<Scope> = owned_rows
+        let mut items: Vec<ViewerScope> = owned_rows
             .into_iter()
-            .map(|r| Scope {
+            .map(|r| ViewerScope {
                 id: r.id,
                 name: r.name,
-                permissions: ScopePermissions {
-                    can_read_note_revisions: true,
-                    can_modify_notes: true,
-                    can_add_their_notes_to_child: true,
-                },
+                permissions: ScopePermissions::owner(),
                 created_at: r.created_at,
             })
             .collect();
 
-        items.extend(member_rows.into_iter().map(|r| Scope {
+        items.extend(member_rows.into_iter().map(|r| ViewerScope {
             id: r.id,
             name: r.name,
             permissions: ScopePermissions {

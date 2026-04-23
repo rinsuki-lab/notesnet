@@ -9,6 +9,7 @@ use crate::server::AppState;
 pub struct ResolvedPersona {
     pub token: AccessToken,
     pub persona_id: uuid::Uuid,
+    pub is_default_persona: bool,
 }
 
 pub enum ResolvedPersonaRejection {
@@ -74,7 +75,7 @@ impl FromRequestParts<AppState> for ResolvedPersona {
             None => None,
         };
 
-        let persona_id = if let Some(pid) = header_persona_id {
+        let (persona_id, is_default_persona) = if let Some(pid) = header_persona_id {
             // トークンがペルソナに紐付いている場合、一致しなければエラー
             if let Some(token_persona_id) = token.persona_id {
                 if token_persona_id != pid {
@@ -83,7 +84,7 @@ impl FromRequestParts<AppState> for ResolvedPersona {
             }
             // ペルソナがアカウントに属しているか確認
             let persona_exists = sqlx::query!(
-                "SELECT 1 as _e FROM personas WHERE id = $1 AND account_id = $2",
+                "SELECT name FROM personas WHERE id = $1 AND account_id = $2",
                 pid,
                 token.account_id,
             )
@@ -93,14 +94,14 @@ impl FromRequestParts<AppState> for ResolvedPersona {
                 tracing::error!(err = %e, "RESOLVE_PERSONA.FAILED_TO_CHECK_PERSONA");
                 ResolvedPersonaRejection::ServerError
             })?;
-            if persona_exists.is_none() {
+            let Some(persona_exists) = persona_exists else {
                 return Err(ResolvedPersonaRejection::PersonaNotFound);
-            }
-            pid
+            };
+            (pid, persona_exists.name.is_none())
         } else if let Some(token_persona_id) = token.persona_id {
             // トークン紐付きペルソナがアカウントに属しているか確認
             let persona_exists = sqlx::query!(
-                "SELECT 1 as _e FROM personas WHERE id = $1 AND account_id = $2",
+                "SELECT name FROM personas WHERE id = $1 AND account_id = $2",
                 token_persona_id,
                 token.account_id,
             )
@@ -110,10 +111,10 @@ impl FromRequestParts<AppState> for ResolvedPersona {
                 tracing::error!(err = %e, "RESOLVE_PERSONA.FAILED_TO_CHECK_TOKEN_PERSONA");
                 ResolvedPersonaRejection::ServerError
             })?;
-            if persona_exists.is_none() {
+            let Some(persona_exists) = persona_exists else {
                 return Err(ResolvedPersonaRejection::PersonaNotFound);
-            }
-            token_persona_id
+            };
+            (token_persona_id, persona_exists.name.is_none())
         } else {
             // デフォルトペルソナを取得
             sqlx::query_scalar!(
@@ -122,12 +123,17 @@ impl FromRequestParts<AppState> for ResolvedPersona {
             )
             .fetch_one(&state.db)
             .await
+            .map(|pid| (pid, true))
             .map_err(|e| {
                 tracing::error!(err = %e, "RESOLVE_PERSONA.FAILED_TO_FETCH_DEFAULT_PERSONA");
                 ResolvedPersonaRejection::ServerError
             })?
         };
 
-        Ok(ResolvedPersona { token, persona_id })
+        Ok(ResolvedPersona {
+            token,
+            persona_id,
+            is_default_persona,
+        })
     }
 }

@@ -93,7 +93,9 @@ impl IntoResponse for CreateNoteError {
 )]
 pub async fn create_note(
     State(state): State<AppState>,
-    ResolvedPersona { token, persona_id }: ResolvedPersona,
+    ResolvedPersona {
+        token, persona_id, ..
+    }: ResolvedPersona,
     Json(body): Json<CreateNoteRequest>,
 ) -> Result<Json<CreateNoteResponse>, CreateNoteError> {
     let scope_id = body.scope_id;

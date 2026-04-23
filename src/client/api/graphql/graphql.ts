@@ -39,7 +39,7 @@ export type Note = {
   __typename?: 'Note';
   external?: Maybe<NoteExternal>;
   id: Scalars['UUID']['output'];
-  latestRevision: NoteRevision;
+  latestRevision?: Maybe<NoteRevision>;
 };
 
 export type NoteExternal = {
@@ -108,7 +108,7 @@ export type GetNoteQueryVariables = Exact<{
 }>;
 
 
-export type GetNoteQuery = { __typename?: 'Query', note?: { __typename?: 'Note', id: any, latestRevision: { __typename?: 'NoteRevision', id: any, summary?: string | null, writtenAt: any, contentType: string, content: any, attributes: any } } | null };
+export type GetNoteQuery = { __typename?: 'Query', note?: { __typename?: 'Note', id: any, latestRevision?: { __typename?: 'NoteRevision', id: any, summary?: string | null, writtenAt: any, contentType: string, content: any, attributes: any } | null } | null };
 
 
 export const MyDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"My"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"viewer"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]} as unknown as DocumentNode<MyQuery, MyQueryVariables>;

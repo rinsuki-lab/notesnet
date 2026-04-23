@@ -13,7 +13,7 @@ scalar JSON
 type Note {
 	id: UUID!
 	external: NoteExternal
-	latestRevision: NoteRevision!
+	latestRevision: NoteRevision
 }
 
 type NoteExternal {

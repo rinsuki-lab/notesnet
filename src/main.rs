@@ -45,11 +45,11 @@ async fn main() {
         return;
     }
 
-    let state = server::AppState {
-        db: PgPool::connect(&std::env::var("DATABASE_URL").expect("DATABASE_URL must be set"))
+    let state = server::AppState::new(
+        PgPool::connect(&std::env::var("DATABASE_URL").expect("DATABASE_URL must be set"))
             .await
             .expect("failed to connect to database"),
-    };
+    );
 
     server::run_server(state).await;
 }

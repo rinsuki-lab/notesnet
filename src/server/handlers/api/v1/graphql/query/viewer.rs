@@ -1,6 +1,6 @@
 use chrono::{DateTime, Utc};
 
-use super::super::types::ScopePermissions;
+use super::super::types::scope_permissions::ScopePermissions;
 use crate::server::{AppState, extractors::ResolvedPersona};
 
 struct Viewer {

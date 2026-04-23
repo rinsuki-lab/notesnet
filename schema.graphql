@@ -21,6 +21,11 @@ type NoteExternal {
 	service: String!
 }
 
+enum NoteOrderBy {
+	WRITTEN_AT
+	INSERTED_AT
+}
+
 type NoteRevision {
 	id: UUID!
 	summary: String
@@ -36,6 +41,13 @@ type NoteRevision {
 type Query {
 	viewer: Viewer!
 	note(id: UUID!): Note
+	recentNotes(first: Int!, orderBy: NoteOrderBy! = WRITTEN_AT, cursor: String): RecentNotes!
+}
+
+type RecentNotes {
+	nodes: [Note!]!
+	nextCursor: String
+	prevCursor: String
 }
 
 type ScopePermissions {

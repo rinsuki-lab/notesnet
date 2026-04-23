@@ -48,6 +48,11 @@ export type NoteExternal = {
   service: Scalars['String']['output'];
 };
 
+export enum NoteOrderBy {
+  InsertedAt = 'INSERTED_AT',
+  WrittenAt = 'WRITTEN_AT'
+}
+
 export type NoteRevision = {
   __typename?: 'NoteRevision';
   attributes: Scalars['JSON']['output'];
@@ -64,12 +69,27 @@ export type NoteRevision = {
 export type Query = {
   __typename?: 'Query';
   note?: Maybe<Note>;
+  recentNotes: RecentNotes;
   viewer: Viewer;
 };
 
 
 export type QueryNoteArgs = {
   id: Scalars['UUID']['input'];
+};
+
+
+export type QueryRecentNotesArgs = {
+  cursor?: InputMaybe<Scalars['String']['input']>;
+  first: Scalars['Int']['input'];
+  orderBy?: NoteOrderBy;
+};
+
+export type RecentNotes = {
+  __typename?: 'RecentNotes';
+  nextCursor?: Maybe<Scalars['String']['output']>;
+  nodes: Array<Note>;
+  prevCursor?: Maybe<Scalars['String']['output']>;
 };
 
 export type ScopePermissions = {

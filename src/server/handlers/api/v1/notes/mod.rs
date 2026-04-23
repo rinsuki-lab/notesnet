@@ -4,13 +4,11 @@ use chrono::{DateTime, Utc};
 use crate::server::AppState;
 
 pub mod create;
-pub mod get;
 pub mod list;
 
 pub fn router() -> axum::Router<AppState> {
     axum::Router::new()
         .route("/", get(list::list_notes).post(create::create_note))
-        .route("/{note_id}", get(get::get_note))
 }
 
 #[derive(serde::Serialize, utoipa::ToSchema)]

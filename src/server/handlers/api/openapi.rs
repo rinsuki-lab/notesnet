@@ -9,7 +9,6 @@ use super::v1;
     paths(
         accounts::create::create_account,
         v1::notes::create::create_note,
-        v1::notes::get::get_note,
         v1::notes::list::list_notes,
         sessions::create::create_session,
     ),

@@ -80,6 +80,7 @@ dependencies = [
  "thiserror",
  "tracing",
  "tracing-futures",
+ "uuid",
 ]
 
 [[package]]

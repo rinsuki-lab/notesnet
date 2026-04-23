@@ -1,5 +1,41 @@
+"""
+Implement the DateTime<Utc> scalar
+
+The input/output is a string in RFC3339 format.
+"""
+scalar DateTime
+
+"""
+A scalar that can represent any JSON value.
+"""
+scalar JSON
+
+type Note {
+	id: UUID!
+	external: NoteExternal
+	latestRevision: NoteRevision!
+}
+
+type NoteExternal {
+	id: String!
+	service: String!
+}
+
+type NoteRevision {
+	id: UUID!
+	summary: String
+	textForSearch: String!
+	contentType: String!
+	content: JSON!
+	attributes: JSON!
+	startedAt: DateTime
+	writtenAt: DateTime!
+	insertedAt: DateTime!
+}
+
 type Query {
 	viewer: Viewer!
+	note(id: UUID!): Note
 }
 
 type ScopePermissions {

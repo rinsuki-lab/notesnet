@@ -1,18 +1,35 @@
 import { useParams } from "react-router";
-import { useGetNote } from "../api/internal";
+import { graphql } from "../api/graphql";
+import { useQuery } from "@apollo/client/react";
 import { NoteContentRenderer } from "../components/NoteContentRenderer";
 
-export function PageNoteDetail() {
-    const id = useParams().noteId
-    const note = useGetNote(id!)
-
-    if (note.data?.status !== 200) {
-        return <div>{":("} {JSON.stringify(note.data)}</div>
+const queryNote = graphql(`
+    query GetNote($id: UUID!) {
+        note(id: $id) {
+            id
+            latestRevision {
+                id
+                summary
+                writtenAt
+                contentType
+                content
+                attributes
+            }
+        }
     }
+`);
 
+export function PageNoteDetail() {
+    const id = useParams().noteId!;
+    const { data, loading, error } = useQuery(queryNote, { variables: { id } });
+
+    if (loading) return <div>Loading...</div>;
+    if (error || !data?.note) return <div>{":("} {error?.message}</div>;
+
+    const revision = data.note.latestRevision;
     return <div>
-        <h2>{note.data.data.summary}</h2>
-        <p>{note.data.data.written_at}</p>
-        <NoteContentRenderer note={note.data.data} />
-    </div>
+        <h2>{revision.summary}</h2>
+        <p>{revision.writtenAt}</p>
+        <NoteContentRenderer note={{ content_type: revision.contentType, content: revision.content, attributes: revision.attributes }} />
+    </div>;
 }

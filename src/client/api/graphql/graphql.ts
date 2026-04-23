@@ -15,6 +15,14 @@ export type Scalars = {
   Int: { input: number; output: number; }
   Float: { input: number; output: number; }
   /**
+   * Implement the DateTime<Utc> scalar
+   *
+   * The input/output is a string in RFC3339 format.
+   */
+  DateTime: { input: any; output: any; }
+  /** A scalar that can represent any JSON value. */
+  JSON: { input: any; output: any; }
+  /**
    * A UUID is a unique 128-bit number, stored as 16 octets. UUIDs are parsed as
    * Strings within GraphQL. UUIDs are used to assign unique identifiers to
    * entities without requiring a central allocating authority.
@@ -27,9 +35,41 @@ export type Scalars = {
   UUID: { input: any; output: any; }
 };
 
+export type Note = {
+  __typename?: 'Note';
+  external?: Maybe<NoteExternal>;
+  id: Scalars['UUID']['output'];
+  latestRevision: NoteRevision;
+};
+
+export type NoteExternal = {
+  __typename?: 'NoteExternal';
+  id: Scalars['String']['output'];
+  service: Scalars['String']['output'];
+};
+
+export type NoteRevision = {
+  __typename?: 'NoteRevision';
+  attributes: Scalars['JSON']['output'];
+  content: Scalars['JSON']['output'];
+  contentType: Scalars['String']['output'];
+  id: Scalars['UUID']['output'];
+  insertedAt: Scalars['DateTime']['output'];
+  startedAt?: Maybe<Scalars['DateTime']['output']>;
+  summary?: Maybe<Scalars['String']['output']>;
+  textForSearch: Scalars['String']['output'];
+  writtenAt: Scalars['DateTime']['output'];
+};
+
 export type Query = {
   __typename?: 'Query';
+  note?: Maybe<Note>;
   viewer: Viewer;
+};
+
+
+export type QueryNoteArgs = {
+  id: Scalars['UUID']['input'];
 };
 
 export type ScopePermissions = {
@@ -63,6 +103,14 @@ export type MyScopesQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type MyScopesQuery = { __typename?: 'Query', viewer: { __typename?: 'Viewer', scopes: Array<{ __typename?: 'ViewerScope', id: string, name: string }> } };
 
+export type GetNoteQueryVariables = Exact<{
+  id: Scalars['UUID']['input'];
+}>;
+
+
+export type GetNoteQuery = { __typename?: 'Query', note?: { __typename?: 'Note', id: any, latestRevision: { __typename?: 'NoteRevision', id: any, summary?: string | null, writtenAt: any, contentType: string, content: any, attributes: any } } | null };
+
 
 export const MyDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"My"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"viewer"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]} as unknown as DocumentNode<MyQuery, MyQueryVariables>;
 export const MyScopesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"MyScopes"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"viewer"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"scopes"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]}}]} as unknown as DocumentNode<MyScopesQuery, MyScopesQueryVariables>;
+export const GetNoteDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetNote"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"UUID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"note"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"latestRevision"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"summary"}},{"kind":"Field","name":{"kind":"Name","value":"writtenAt"}},{"kind":"Field","name":{"kind":"Name","value":"contentType"}},{"kind":"Field","name":{"kind":"Name","value":"content"}},{"kind":"Field","name":{"kind":"Name","value":"attributes"}}]}}]}}]}}]} as unknown as DocumentNode<GetNoteQuery, GetNoteQueryVariables>;

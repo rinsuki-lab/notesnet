@@ -64,6 +64,7 @@ dependencies = [
  "asynk-strim",
  "base64",
  "bytes",
+ "chrono",
  "fnv",
  "futures-util",
  "http",

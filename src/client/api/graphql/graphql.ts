@@ -53,10 +53,16 @@ export type ViewerScope = {
   permissions: ScopePermissions;
 };
 
+export type MyQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type MyQuery = { __typename?: 'Query', viewer: { __typename?: 'Viewer', id: any, name: string } };
+
 export type MyScopesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type MyScopesQuery = { __typename?: 'Query', viewer: { __typename?: 'Viewer', scopes: Array<{ __typename?: 'ViewerScope', id: string, name: string }> } };
 
 
+export const MyDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"My"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"viewer"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]} as unknown as DocumentNode<MyQuery, MyQueryVariables>;
 export const MyScopesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"MyScopes"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"viewer"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"scopes"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]}}]} as unknown as DocumentNode<MyScopesQuery, MyScopesQueryVariables>;

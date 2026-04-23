@@ -1,21 +1,32 @@
 import { Route, Routes } from "react-router"
-import { useGetMe } from "./api/internal"
 import { ComposePost } from "./components/ComposePost"
 import { PageLatestPosts } from "./pages/PageLatestPosts"
 import { PageLogin } from "./pages/PageLogin"
 import { PageNoteDetail } from "./pages/PageNoteDetail"
+import { graphql } from "./api/graphql"
+import { useQuery } from "@apollo/client/react"
+import { ServerError } from "@apollo/client"
+
+const queryMy = graphql(`
+    query My {
+        viewer {
+            id
+            name
+        }
+    }
+`)
 
 export function App() {
-    const user = useGetMe()
+    const user = useQuery(queryMy)
 
-    if (user.data == null) {
-        return null
-    }
-
-    if (user.data.status !== 200) {
+    if (user.error instanceof ServerError && user.error.statusCode === 401) {
         return <div>
             <PageLogin />
         </div>
+    }
+
+    if (user.data == null) {
+        return "Loading..."
     }
 
     return <div>

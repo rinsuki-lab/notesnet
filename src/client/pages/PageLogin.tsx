@@ -7,7 +7,7 @@ export function PageLogin() {
             onSuccess(data) {
                 if (data.status === 200) {
                     localStorage.setItem("notesnet_token", data.data.access_token)
-                    queryClient.invalidateQueries()
+                    location.reload()
                 }
             }
         }

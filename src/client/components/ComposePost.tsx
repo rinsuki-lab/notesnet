@@ -1,8 +1,7 @@
 import { useCallback, useEffect, useState } from "react"
-import { getListNotesQueryKey, useCreateNote, useGetMeScopes } from "../api/internal"
-import { queryClient } from "../api/query-client"
+import { useCreateNote } from "../api/internal"
 import { graphql } from "../api/graphql"
-import { useQuery } from "@apollo/client/react"
+import { useQuery, useApolloClient } from "@apollo/client/react"
 
 const queryMyScopes = graphql(`
     query MyScopes {
@@ -20,13 +19,22 @@ export function ComposePost() {
     const [text, setText] = useState("")
 
     const scopes = useQuery(queryMyScopes)
+    const apolloClient = useApolloClient()
 
     const createPost = useCreateNote({
         mutation: {
             onSuccess() {
                 setText("")
-                queryClient.invalidateQueries({
-                    queryKey: getListNotesQueryKey(),
+                apolloClient.refetchQueries({
+                    include: "active",
+                    onQueryUpdated(observableQuery) {
+                        return observableQuery.query.definitions.some(def =>
+                            def.kind === "OperationDefinition" &&
+                            def.selectionSet.selections.some(sel =>
+                                sel.kind === "Field" && sel.name.value === "recentNotes"
+                            )
+                        )
+                    },
                 })
             }
         }

@@ -1,20 +1,40 @@
 import { Link } from "react-router"
-import { useListNotes } from "../api/internal"
+import { graphql } from "../api/graphql"
+import { useQuery } from "@apollo/client/react"
 import { NoteContentRenderer } from "../components/NoteContentRenderer"
 
-export function PageLatestPosts() {
-    const posts = useListNotes()
-
-    if (posts.data?.status !== 200) {
-        return <div>{":("} {JSON.stringify(posts.data)}</div>
+const queryRecentNotes = graphql(`
+    query RecentNotes {
+        recentNotes(first: 20) {
+            nodes {
+                id
+                latestRevision {
+                    id
+                    summary
+                    writtenAt
+                    contentType
+                    content
+                    attributes
+                }
+            }
+        }
     }
+`)
+
+export function PageLatestPosts() {
+    const { data, loading, error } = useQuery(queryRecentNotes)
+
+    if (loading && !data) return <div>Loading...</div>
+    if (error || !data) return <div>{":("} {error?.message}</div>
 
     return <div>
-        {posts.data.data.items.map(item => {
-            return <div key={item.revision_id}>
-                <p><Link to={`/notes/${item.note_id}`}>{item.written_at}</Link>・{item.content_type}</p>
-                <p>{item.summary}</p>
-                <NoteContentRenderer note={item} />
+        {data.recentNotes.nodes.map(item => {
+            const rev = item.latestRevision
+            if (!rev) return null
+            return <div key={rev.id}>
+                <p><Link to={`/notes/${item.id}`}>{rev.writtenAt}</Link>・{rev.contentType}</p>
+                <p>{rev.summary}</p>
+                <NoteContentRenderer note={{ content_type: rev.contentType, content: rev.content, attributes: rev.attributes }} />
             </div>
         })}
     </div>

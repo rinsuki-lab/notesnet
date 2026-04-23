@@ -11,7 +11,3 @@ export * from './createNoteResponse';
 export * from './createSessionRequest';
 export * from './createSessionResponse';
 export * from './createUserRequest';
-export * from './listNotesItem';
-export * from './listNotesOrderBy';
-export * from './listNotesParams';
-export * from './listNotesResponse';

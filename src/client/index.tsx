@@ -12,6 +12,10 @@ const client = new ApolloClient({
     link: new HttpLink({
         uri: "/api/v1/graphql",
         fetch(input, init) {
+            if (init?.body != null) {
+                const body = JSON.parse(init.body.toString())
+                input += "#" + body.operationName
+            }
             const req = new Request(input, init)
             const token = localStorage.getItem("notesnet_token")
             if (token) {

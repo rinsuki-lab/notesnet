@@ -25,6 +25,12 @@ export function App() {
         </div>
     }
 
+    if (user.error) {
+        return <div>
+            Error: {user.error.message}
+        </div>
+    }
+
     if (user.data == null) {
         return "Loading..."
     }

@@ -37,7 +37,7 @@ export function ComposePost() {
         if (scopes.data.viewer.scopes.length === 0) return
         if (scopes.data.viewer.scopes.some(item => item.id === selectedScopeId)) return
         setSelectedScopeId(scopes.data.viewer.scopes[0].id)
-    }, [selectedScopeId, ...scopes.data?.viewer.scopes.map(s => s.id) ?? []])
+    }, [selectedScopeId, scopes.data?.viewer.scopes.map(s => s.id).join(",") ?? ""])
 
     const submit = useCallback(() => {
         createPost.mutate({

@@ -1,6 +1,6 @@
 use crate::server::AppState;
 
-mod graphql;
+pub mod graphql;
 pub mod me;
 pub mod notes;
 

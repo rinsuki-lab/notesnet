@@ -5,16 +5,21 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev:refresh": "cargo run -- --output-openapi-and-exit > openapi.json && rm -r src/client/api/internal/ && orval"
+    "dev:refresh": "cargo run -- --dump-schema-and-exit && rm -r src/client/api/internal/ && orval && graphql-codegen"
   },
   "keywords": [],
   "author": "",
   "packageManager": "pnpm@10.29.3",
   "dependencies": {
+    "@apollo/client": "^4.1.7",
+    "graphql": "^16.13.2",
+    "graphql-request": "^7.4.0",
     "react": "^19.2.5",
     "react-dom": "^19.2.5"
   },
   "devDependencies": {
+    "@graphql-codegen/cli": "^6.3.0",
+    "@graphql-typed-document-node/core": "^3.2.0",
     "@tanstack/react-query": "^5.97.0",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",

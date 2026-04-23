@@ -1,12 +1,26 @@
 import { useCallback, useEffect, useState } from "react"
 import { getListNotesQueryKey, useCreateNote, useGetMeScopes } from "../api/internal"
 import { queryClient } from "../api/query-client"
+import { graphql } from "../api/graphql"
+import { useQuery } from "@apollo/client/react"
+
+const queryMyScopes = graphql(`
+    query MyScopes {
+        viewer {
+            scopes {
+                id
+                name
+            }
+        }
+    }
+`)
 
 export function ComposePost() {
     const [selectedScopeId, setSelectedScopeId] = useState("")
     const [text, setText] = useState("")
 
-    const scopes = useGetMeScopes()
+    const scopes = useQuery(queryMyScopes)
+
     const createPost = useCreateNote({
         mutation: {
             onSuccess() {
@@ -19,11 +33,11 @@ export function ComposePost() {
     })
 
     useEffect(() => {
-        if (scopes.data?.status !== 200) return
-        if (scopes.data.data.items.length === 0) return
-        if (scopes.data.data.items.some(item => item.id === selectedScopeId)) return
-        setSelectedScopeId(scopes.data.data.items[0].id)
-    }, [selectedScopeId, scopes.data?.status, scopes.data?.data])
+        if (scopes.data == null) return
+        if (scopes.data.viewer.scopes.length === 0) return
+        if (scopes.data.viewer.scopes.some(item => item.id === selectedScopeId)) return
+        setSelectedScopeId(scopes.data.viewer.scopes[0].id)
+    }, [selectedScopeId, ...scopes.data?.viewer.scopes.map(s => s.id) ?? []])
 
     const submit = useCallback(() => {
         createPost.mutate({
@@ -43,8 +57,8 @@ export function ComposePost() {
         })
     }, [text, selectedScopeId, createPost])
 
-    if (scopes.data?.status !== 200) {
-        return <div>{":("} {JSON.stringify(scopes.data)}</div>
+    if (scopes.data == null) {
+        return <div>{":("} {JSON.stringify(scopes.error)}</div>
     }
 
     return <div>
@@ -55,7 +69,7 @@ export function ComposePost() {
             }
             setSelectedScopeId(scopeId)
         }}>
-            {scopes.data?.data.items.map(scope => <option key={scope.id} value={scope.id}>{scope.name}</option>)}
+            {scopes.data?.viewer.scopes.map(scope => <option key={scope.id} value={scope.id}>{scope.name}</option>)}
         </select>
         <textarea value={text} onInput={e => setText(e.currentTarget.value)} onKeyDown={e => {
             if ((e.metaKey || e.ctrlKey) && e.code == "Enter") {

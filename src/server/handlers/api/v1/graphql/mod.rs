@@ -5,13 +5,17 @@ use crate::server::{AppState, extractors::ResolvedPersona};
 mod query;
 mod types;
 
-pub fn router() -> axum::Router<AppState> {
-    let schema = async_graphql::Schema::build(
+pub fn schema() -> async_graphql::Schema<query::Query, async_graphql::EmptyMutation, async_graphql::EmptySubscription> {
+    async_graphql::Schema::build(
         query::Query::default(),
         async_graphql::EmptyMutation,
         async_graphql::EmptySubscription,
     )
-    .finish();
+    .finish()
+}
+
+pub fn router() -> axum::Router<AppState> {
+    let schema = schema();
 
     axum::Router::new().route(
         "/",

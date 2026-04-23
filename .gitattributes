@@ -1,2 +1,4 @@
+schema.graphql  linguist-generated
 openapi.json    linguist-generated
 src/client/api/internal/**.ts   linguist-generated
+src/client/api/graphql/**.ts    linguist-generated

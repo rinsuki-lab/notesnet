@@ -33,6 +33,9 @@ importers:
       '@tanstack/react-query':
         specifier: ^5.97.0
         version: 5.97.0(react@19.2.5)
+      '@types/node':
+        specifier: ^25.6.0
+        version: 25.6.0
       '@types/react':
         specifier: ^19.2.14
         version: 19.2.14

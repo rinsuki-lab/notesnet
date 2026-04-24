@@ -1,0 +1,14 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "INSERT INTO personas(id, account_id, name) VALUES ($1, $1, NULL)",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Uuid"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "fa0d117f6c592807032d7795abe509fdad8a161ee66f5f17d7287d7bde895174"
+}

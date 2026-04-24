@@ -1,0 +1,30 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "INSERT INTO note_revisions(id, note_id, author_persona_id, summary, text_for_search, content_type, attributes, content, started_at, written_at)\n        VALUES (gen_random_uuid(), $1, $2, $3, $4, $5, $6, $7, $8, $9)\n        RETURNING id",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Uuid"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Uuid",
+        "Uuid",
+        "Text",
+        "Text",
+        "Text",
+        "Jsonb",
+        "Jsonb",
+        "Timestamptz",
+        "Timestamptz"
+      ]
+    },
+    "nullable": [
+      false
+    ]
+  },
+  "hash": "6c20b22d595a8e316c4312df90638d64f65dbfe25a2aba0b2d456ada23d9f128"
+}

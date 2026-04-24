@@ -18,10 +18,12 @@ jobs:
     - run: |
         echo "/home/linuxbrew/.linuxbrew/bin" >> $GITHUB_PATH
         echo "/home/linuxbrew/.linuxbrew/sbin" >> $GITHUB_PATH
-    - run: brew install sqlx-cli pg-schema-diff
+    - run: brew install sqlx-cli pg-schema-diff sqlx-cli
     - run: sqlx migrate run
     - run: ./generate_migrate.py check_diffes
     - run: git add -A && git diff --exit-code
     - run: corepack enable && pnpm install
     - run: pnpm dev:refresh
+    - run: git add -A && git diff --exit-code
+    - run: cargo sqlx prepare
     - run: git add -A && git diff --exit-code

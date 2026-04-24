@@ -1,0 +1,52 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            SELECT\n                scopes.id,\n                scopes.name,\n                scopes.created_at,\n                scope_personas.can_read_note_revisions,\n                scope_personas.can_modify_notes,\n                scope_personas.can_add_their_notes_to_child\n            FROM scope_personas\n            JOIN scopes ON scopes.id = scope_personas.scope_id\n            WHERE scope_personas.persona_id = $1\n            AND NOT EXISTS (\n                SELECT 1 FROM personas\n                WHERE personas.account_id = scopes.owner_account_id\n                    AND personas.name IS NULL\n                    AND personas.id = $1\n            )\n            ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 1,
+        "name": "name",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 2,
+        "name": "created_at",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 3,
+        "name": "can_read_note_revisions",
+        "type_info": "Bool"
+      },
+      {
+        "ordinal": 4,
+        "name": "can_modify_notes",
+        "type_info": "Bool"
+      },
+      {
+        "ordinal": 5,
+        "name": "can_add_their_notes_to_child",
+        "type_info": "Bool"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Uuid"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  "hash": "7cfbae5be4382b7bac1ff34975773027acac794a5f383cbbd4df1b4f62147eb9"
+}

@@ -1,0 +1,46 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            SELECT\n                notes.id,\n                external_service,\n                external_id,\n                scope_id,\n                note_revisions.id AS latest_revision_id\n            FROM notes\n            LEFT JOIN note_revisions ON notes.id = note_revisions.note_id AND note_revisions.next_revision_id IS NULL\n            WHERE notes.id = ANY($1)\n            ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 1,
+        "name": "external_service",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 2,
+        "name": "external_id",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 3,
+        "name": "scope_id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 4,
+        "name": "latest_revision_id",
+        "type_info": "Uuid"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "UuidArray"
+      ]
+    },
+    "nullable": [
+      false,
+      true,
+      true,
+      false,
+      true
+    ]
+  },
+  "hash": "831052345dda6910612ea2331ba21c4b6c1a4fdc415e8a75c2a94cea60e6a501"
+}

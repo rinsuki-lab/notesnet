@@ -15,8 +15,6 @@ import type {
 } from '@tanstack/react-query';
 
 import type {
-  CreateNoteRequest,
-  CreateNoteResponse,
   CreateSessionRequest,
   CreateSessionResponse,
   CreateUserRequest
@@ -214,114 +212,5 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
         TContext
       > => {
       return useMutation(getCreateSessionMutationOptions(options), queryClient);
-    }
-
-export type createNoteResponse200 = {
-  data: CreateNoteResponse
-  status: 200
-}
-
-export type createNoteResponse400 = {
-  data: void
-  status: 400
-}
-
-export type createNoteResponse401 = {
-  data: void
-  status: 401
-}
-
-export type createNoteResponse403 = {
-  data: void
-  status: 403
-}
-
-export type createNoteResponse404 = {
-  data: void
-  status: 404
-}
-
-export type createNoteResponse422 = {
-  data: void
-  status: 422
-}
-
-export type createNoteResponse500 = {
-  data: void
-  status: 500
-}
-
-export type createNoteResponseSuccess = (createNoteResponse200) & {
-  headers: Headers;
-};
-export type createNoteResponseError = (createNoteResponse400 | createNoteResponse401 | createNoteResponse403 | createNoteResponse404 | createNoteResponse422 | createNoteResponse500) & {
-  headers: Headers;
-};
-
-export type createNoteResponse = (createNoteResponseSuccess | createNoteResponseError)
-
-export const getCreateNoteUrl = () => {
-
-
-
-
-  return `/api/v1/notes`
-}
-
-export const createNote = async (createNoteRequest: CreateNoteRequest, options?: RequestInit): Promise<createNoteResponse> => {
-
-  return customFetch<createNoteResponse>(getCreateNoteUrl(),
-  {
-    ...options,
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(
-      createNoteRequest,)
-  }
-);}
-
-
-
-
-export const getCreateNoteMutationOptions = <TError = void,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createNote>>, TError,{data: CreateNoteRequest}, TContext>, request?: SecondParameter<typeof customFetch>}
-): UseMutationOptions<Awaited<ReturnType<typeof createNote>>, TError,{data: CreateNoteRequest}, TContext> => {
-
-const mutationKey = ['createNote'];
-const {mutation: mutationOptions, request: requestOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
-
-
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof createNote>>, {data: CreateNoteRequest}> = (props) => {
-          const {data} = props ?? {};
-
-          return  createNote(data,requestOptions)
-        }
-
-
-
-
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type CreateNoteMutationResult = NonNullable<Awaited<ReturnType<typeof createNote>>>
-    export type CreateNoteMutationBody = CreateNoteRequest
-    export type CreateNoteMutationError = void
-
-    export const useCreateNote = <TError = void,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createNote>>, TError,{data: CreateNoteRequest}, TContext>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof createNote>>,
-        TError,
-        {data: CreateNoteRequest},
-        TContext
-      > => {
-      return useMutation(getCreateNoteMutationOptions(options), queryClient);
     }
 

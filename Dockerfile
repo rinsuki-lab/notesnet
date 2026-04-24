@@ -6,6 +6,8 @@ COPY package.json pnpm-lock.yaml ./
 RUN pnpm install --frozen-lockfile
 RUN --mount=type=bind,source=src/client,target=src/client \
     --mount=type=bind,source=index.html,target=index.html \
+    --mount=type=bind,source=vite.config.ts,target=vite.config.ts \
+    --mount=type=bind,source=assets-compressor.mts,target=assets-compressor.mts \
     pnpm build
 
 FROM rust:1.93-trixie AS backend

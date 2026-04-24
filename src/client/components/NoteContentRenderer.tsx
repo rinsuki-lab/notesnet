@@ -1,7 +1,7 @@
 import { JSX } from "react"
 
 type NoteContent = {
-    content_type: string,
+    contentType: string,
     content: unknown,
     attributes: unknown,
 }
@@ -17,9 +17,9 @@ const noteRenderers = {
 } as Partial<Record<string, (props: { note: NoteContent }) => JSX.Element>>
 
 export const NoteContentRenderer = (props: { note: NoteContent}) => {
-    const Renderer = noteRenderers[props.note.content_type]
+    const Renderer = noteRenderers[props.note.contentType]
     if (Renderer == null) {
-        return <p>Unsupported content type: {props.note.content_type}</p>
+        return <p>Unsupported content type: {props.note.contentType}</p>
     }
     return <Renderer note={props.note} />
 }

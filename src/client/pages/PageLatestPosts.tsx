@@ -34,7 +34,7 @@ export function PageLatestPosts() {
             return <div key={rev.id}>
                 <p><Link to={`/notes/${item.id}`}>{rev.writtenAt}</Link>・{rev.contentType}</p>
                 <p>{rev.summary}</p>
-                <NoteContentRenderer note={{ content_type: rev.contentType, content: rev.content, attributes: rev.attributes }} />
+                <NoteContentRenderer note={rev} />
             </div>
         })}
     </div>

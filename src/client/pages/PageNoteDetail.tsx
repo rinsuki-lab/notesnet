@@ -30,6 +30,6 @@ export function PageNoteDetail() {
     return revision && <div>
         <h2>{revision.summary}</h2>
         <p>{revision.writtenAt}</p>
-        <NoteContentRenderer note={{ content_type: revision.contentType, content: revision.content, attributes: revision.attributes }} />
+        <NoteContentRenderer note={revision} />
     </div>;
 }

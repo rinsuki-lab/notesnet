@@ -1,0 +1,24 @@
+.compose-post {
+    position: sticky;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.8);
+    padding: 8px;
+
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 8px;
+    grid-template-areas:
+        "scope send"
+        "text send";
+    
+    & > .scope-select {
+        grid-area: scope;
+    }
+    & > .text-input {
+        grid-area: text;
+        resize: vertical;
+    }
+    & > .send-button {
+        grid-area: send;
+    }
+}

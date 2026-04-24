@@ -2,6 +2,8 @@ import { useCallback, useState } from "react"
 import { graphql } from "../api/graphql"
 import { useQuery, useMutation, useApolloClient } from "@apollo/client/react"
 
+import "./ComposePost.css"
+
 const queryMyScopes = graphql(`
     query MyScopes {
         viewer {
@@ -64,8 +66,8 @@ export function ComposePost() {
         })
     }, [text, effectiveScopeId, canSubmit, createNewNote])
 
-    return <div>
-        {scopes.data != null ? <select value={effectiveScopeId} disabled={createNewNoteResult.loading} onChange={e => {
+    return <div className="compose-post">
+        {scopes.data != null ? <select className="scope-select" value={effectiveScopeId} disabled={createNewNoteResult.loading} onChange={e => {
             const scopeId = e.currentTarget.value
             if (scopeId === "") {
                 return
@@ -74,13 +76,13 @@ export function ComposePost() {
         }}>
             {scopes.data.viewer.scopes.filter(s => s.permissions.canModifyNotes).map(scope => <option key={scope.id} value={scope.id}>{scope.name}</option>)}
         </select> : <div>Loading scopes...</div>}
-        <textarea value={text} onChange={e => setText(e.currentTarget.value)} disabled={createNewNoteResult.loading} onKeyDown={e => {
+        <textarea className="text-input" value={text} onChange={e => setText(e.currentTarget.value)} disabled={createNewNoteResult.loading} onKeyDown={e => {
             if ((e.metaKey || e.ctrlKey) && e.code === "Enter") {
                 e.preventDefault()
                 submit()
             }
         }}/>
-        <button type="button" onClick={submit} disabled={!canSubmit}>Send</button>
+        <button className="send-button" type="button" onClick={submit} disabled={!canSubmit}>Send</button>
         {createNewNoteResult.error && <div>Failed to post: {`${createNewNoteResult.error}`}</div>}
     </div>
 }

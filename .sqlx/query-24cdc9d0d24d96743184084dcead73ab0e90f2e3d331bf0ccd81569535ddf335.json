@@ -1,0 +1,24 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT 1 as _e FROM scopes\n                JOIN personas ON personas.account_id = scopes.owner_account_id AND personas.name IS NULL\n                WHERE scopes.id = $1 AND scopes.owner_account_id = $2 AND personas.id = $3\n            UNION ALL\n            SELECT 1 FROM scope_personas WHERE scope_id = $1 AND persona_id = $3 AND can_modify_notes = TRUE\n            LIMIT 1",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "_e",
+        "type_info": "Int4"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Uuid",
+        "Uuid",
+        "Uuid"
+      ]
+    },
+    "nullable": [
+      null
+    ]
+  },
+  "hash": "24cdc9d0d24d96743184084dcead73ab0e90f2e3d331bf0ccd81569535ddf335"
+}

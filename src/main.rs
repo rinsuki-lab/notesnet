@@ -49,15 +49,23 @@ async fn main() {
         .await
         .expect("failed to connect to database");
 
+    if std::env::args().any(|a| a == "--migrate-and-run") {
+        migrate(&pool).await;
+    }
+
     if std::env::args().any(|a| a == "--migrate-and-exit") {
-        sqlx::migrate!()
-            .run(&pool)
-            .await
-            .expect("failed to run migrations");
+        migrate(&pool).await;
         return;
     }
 
     let state = server::AppState::new(pool);
 
     server::run_server(state).await;
+}
+
+async fn migrate(pool: &PgPool) {
+    sqlx::migrate!()
+        .run(pool)
+        .await
+        .expect("failed to run migrations");
 }

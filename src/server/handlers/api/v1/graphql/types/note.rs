@@ -1,6 +1,5 @@
 use std::sync::Arc;
 
-
 use crate::server::handlers::api::v1::graphql::loader::{DatabaseDataLoader, NoteRevisionId};
 
 use super::note_external::NoteExternal;

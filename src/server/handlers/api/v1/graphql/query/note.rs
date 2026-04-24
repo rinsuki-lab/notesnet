@@ -1,9 +1,8 @@
 use std::sync::Arc;
 
-
 use crate::server::extractors::ResolvedPersona;
 use crate::server::handlers::api::v1::graphql::loader::{
-    DatabaseDataLoader, DatabaseDataLoaderExt, NoteId
+    DatabaseDataLoader, DatabaseDataLoaderExt, NoteId,
 };
 
 use super::super::types::note::Note;
@@ -30,7 +29,9 @@ impl NoteQuery {
             return Ok(None);
         };
 
-        let permission = loader.get_permission_by_scope_id(note.scope_id, &persona).await?;
+        let permission = loader
+            .get_permission_by_scope_id(note.scope_id, &persona)
+            .await?;
 
         if permission.is_none() {
             return Ok(None);

@@ -3,17 +3,15 @@ use axum::extract::State;
 use crate::server::{AppState, extractors::ResolvedPersona};
 
 pub mod loader;
+mod mutation;
 mod query;
 mod types;
 
-pub fn schema() -> async_graphql::Schema<
-    query::Query,
-    async_graphql::EmptyMutation,
-    async_graphql::EmptySubscription,
-> {
+pub fn schema()
+-> async_graphql::Schema<query::Query, mutation::Mutation, async_graphql::EmptySubscription> {
     async_graphql::Schema::build(
         query::Query::default(),
-        async_graphql::EmptyMutation,
+        mutation::Mutation::default(),
         async_graphql::EmptySubscription,
     )
     .finish()

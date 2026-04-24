@@ -35,6 +35,35 @@ export type Scalars = {
   UUID: { input: any; output: any; }
 };
 
+export type CreateNoteInput = {
+  attributes: Scalars['JSON']['input'];
+  content: Scalars['JSON']['input'];
+  contentType: Scalars['String']['input'];
+  parents?: Array<CreateNoteParentInput>;
+  scopeId: Scalars['UUID']['input'];
+  startedAt?: InputMaybe<Scalars['DateTime']['input']>;
+  summary?: InputMaybe<Scalars['String']['input']>;
+  textForSearch: Scalars['String']['input'];
+  writtenAt?: InputMaybe<Scalars['DateTime']['input']>;
+};
+
+export type CreateNoteParentInput = {
+  orderChild?: InputMaybe<Scalars['Int']['input']>;
+  parentNoteId: Scalars['UUID']['input'];
+  shouldListedAsChild?: Scalars['Boolean']['input'];
+  shouldListedAsParent?: Scalars['Boolean']['input'];
+};
+
+export type Mutation = {
+  __typename?: 'Mutation';
+  createNewNote: Note;
+};
+
+
+export type MutationCreateNewNoteArgs = {
+  input: CreateNoteInput;
+};
+
 export type Note = {
   __typename?: 'Note';
   external?: Maybe<NoteExternal>;

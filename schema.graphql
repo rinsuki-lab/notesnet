@@ -1,3 +1,22 @@
+input CreateNoteInput {
+	scopeId: UUID!
+	summary: String
+	textForSearch: String!
+	contentType: String!
+	attributes: JSON!
+	content: JSON!
+	startedAt: DateTime
+	writtenAt: DateTime
+	parents: [CreateNoteParentInput!]! = []
+}
+
+input CreateNoteParentInput {
+	parentNoteId: UUID!
+	shouldListedAsChild: Boolean! = true
+	shouldListedAsParent: Boolean! = true
+	orderChild: Int
+}
+
 """
 Implement the DateTime<Utc> scalar
 
@@ -9,6 +28,10 @@ scalar DateTime
 A scalar that can represent any JSON value.
 """
 scalar JSON
+
+type Mutation {
+	createNewNote(input: CreateNoteInput!): Note!
+}
 
 type Note {
 	id: UUID!
@@ -94,4 +117,5 @@ Provides a scalar specification URL for specifying the behavior of custom scalar
 directive @specifiedBy(url: String!) on SCALAR
 schema {
 	query: Query
+	mutation: Mutation
 }

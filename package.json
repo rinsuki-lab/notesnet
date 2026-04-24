@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "vite build && node ./assets-compressor.mts",
     "dev:refresh": "cargo run -- --dump-schema-and-exit && rm -r src/client/api/internal/ && orval && graphql-codegen"
   },
   "keywords": [],

@@ -6,7 +6,7 @@ COPY package.json pnpm-lock.yaml ./
 RUN pnpm install --frozen-lockfile
 RUN --mount=type=bind,source=src/client,target=src/client \
     --mount=type=bind,source=index.html,target=index.html \
-    pnpm vite build
+    pnpm build
 
 FROM rust:1.93-trixie AS backend
 WORKDIR /notesnet

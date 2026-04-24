@@ -15,13 +15,15 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
  */
 type Documents = {
     "\n    query My {\n        viewer {\n            id\n            name\n        }\n    }\n": typeof types.MyDocument,
-    "\n    query MyScopes {\n        viewer {\n            scopes {\n                id\n                name\n            }\n        }\n    }\n": typeof types.MyScopesDocument,
+    "\n    query MyScopes {\n        viewer {\n            scopes {\n                id\n                name\n                permissions {\n                    canModifyNotes\n                }\n            }\n        }\n    }\n": typeof types.MyScopesDocument,
+    "\n    mutation CreateNewNote($input: CreateNoteInput!) {\n        createNewNote(input: $input) {\n            id\n        }\n    }\n": typeof types.CreateNewNoteDocument,
     "\n    query RecentNotes {\n        recentNotes(first: 20) {\n            nodes {\n                id\n                latestRevision {\n                    id\n                    summary\n                    writtenAt\n                    contentType\n                    content\n                    attributes\n                }\n            }\n        }\n    }\n": typeof types.RecentNotesDocument,
     "\n    query GetNote($id: UUID!) {\n        note(id: $id) {\n            id\n            latestRevision {\n                id\n                summary\n                writtenAt\n                contentType\n                content\n                attributes\n            }\n        }\n    }\n": typeof types.GetNoteDocument,
 };
 const documents: Documents = {
     "\n    query My {\n        viewer {\n            id\n            name\n        }\n    }\n": types.MyDocument,
-    "\n    query MyScopes {\n        viewer {\n            scopes {\n                id\n                name\n            }\n        }\n    }\n": types.MyScopesDocument,
+    "\n    query MyScopes {\n        viewer {\n            scopes {\n                id\n                name\n                permissions {\n                    canModifyNotes\n                }\n            }\n        }\n    }\n": types.MyScopesDocument,
+    "\n    mutation CreateNewNote($input: CreateNoteInput!) {\n        createNewNote(input: $input) {\n            id\n        }\n    }\n": types.CreateNewNoteDocument,
     "\n    query RecentNotes {\n        recentNotes(first: 20) {\n            nodes {\n                id\n                latestRevision {\n                    id\n                    summary\n                    writtenAt\n                    contentType\n                    content\n                    attributes\n                }\n            }\n        }\n    }\n": types.RecentNotesDocument,
     "\n    query GetNote($id: UUID!) {\n        note(id: $id) {\n            id\n            latestRevision {\n                id\n                summary\n                writtenAt\n                contentType\n                content\n                attributes\n            }\n        }\n    }\n": types.GetNoteDocument,
 };
@@ -47,7 +49,11 @@ export function graphql(source: "\n    query My {\n        viewer {\n           
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n    query MyScopes {\n        viewer {\n            scopes {\n                id\n                name\n            }\n        }\n    }\n"): (typeof documents)["\n    query MyScopes {\n        viewer {\n            scopes {\n                id\n                name\n            }\n        }\n    }\n"];
+export function graphql(source: "\n    query MyScopes {\n        viewer {\n            scopes {\n                id\n                name\n                permissions {\n                    canModifyNotes\n                }\n            }\n        }\n    }\n"): (typeof documents)["\n    query MyScopes {\n        viewer {\n            scopes {\n                id\n                name\n                permissions {\n                    canModifyNotes\n                }\n            }\n        }\n    }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n    mutation CreateNewNote($input: CreateNoteInput!) {\n        createNewNote(input: $input) {\n            id\n        }\n    }\n"): (typeof documents)["\n    mutation CreateNewNote($input: CreateNoteInput!) {\n        createNewNote(input: $input) {\n            id\n        }\n    }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

@@ -45,11 +45,19 @@ async fn main() {
         return;
     }
 
-    let state = server::AppState::new(
-        PgPool::connect(&std::env::var("DATABASE_URL").expect("DATABASE_URL must be set"))
+    let pool = PgPool::connect(&std::env::var("DATABASE_URL").expect("DATABASE_URL must be set"))
+        .await
+        .expect("failed to connect to database");
+
+    if std::env::args().any(|a| a == "--migrate-and-exit") {
+        sqlx::migrate!()
+            .run(&pool)
             .await
-            .expect("failed to connect to database"),
-    );
+            .expect("failed to run migrations");
+        return;
+    }
+
+    let state = server::AppState::new(pool);
 
     server::run_server(state).await;
 }

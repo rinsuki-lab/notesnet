@@ -10,7 +10,7 @@ pub struct ScopePermissionId {
     pub persona_id: uuid::Uuid,
 }
 
-impl Loader<ScopePermissionId> for super::DatabaseLoader {
+impl Loader<ScopePermissionId> for super::DatabaseLoaderInner {
     type Value = Arc<types::scope_permissions::ScopePermissions>;
     type Error = Arc<sqlx::Error>;
 

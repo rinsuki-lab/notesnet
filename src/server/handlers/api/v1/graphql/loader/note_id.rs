@@ -7,7 +7,7 @@ use crate::server::handlers::api::v1::graphql::types;
 #[derive(Clone, Debug, PartialEq, Eq, Hash)]
 pub struct NoteId(pub uuid::Uuid);
 
-impl Loader<NoteId> for super::DatabaseLoader {
+impl Loader<NoteId> for super::DatabaseLoaderInner {
     type Value = Arc<types::note::Note>;
     type Error = Arc<sqlx::Error>;
 

@@ -1,8 +1,7 @@
 use std::sync::Arc;
 
-use async_graphql::dataloader::DataLoader;
 
-use crate::server::handlers::api::v1::graphql::loader::{DatabaseLoader, NoteRevisionId};
+use crate::server::handlers::api::v1::graphql::loader::{DatabaseDataLoader, NoteRevisionId};
 
 use super::note_external::NoteExternal;
 use super::note_revision::NoteRevision;
@@ -32,7 +31,7 @@ impl Note {
             return Ok(None);
         };
 
-        let loader = ctx.data_unchecked::<Arc<DataLoader<DatabaseLoader>>>();
+        let loader = ctx.data_unchecked::<DatabaseDataLoader>();
         // このnoteが見えているということは最新リビジョンを読む権限は持っているはず
         loader
             .load_one(NoteRevisionId(revision_id))

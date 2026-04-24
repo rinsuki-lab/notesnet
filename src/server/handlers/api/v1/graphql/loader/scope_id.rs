@@ -7,7 +7,7 @@ use crate::server::handlers::api::v1::graphql::types;
 #[derive(Clone, Debug, PartialEq, Eq, Hash)]
 pub struct ScopeId(pub uuid::Uuid);
 
-impl Loader<ScopeId> for super::DatabaseLoader {
+impl Loader<ScopeId> for super::DatabaseLoaderInner {
     type Value = Arc<types::scope::Scope>;
     type Error = Arc<sqlx::Error>;
 

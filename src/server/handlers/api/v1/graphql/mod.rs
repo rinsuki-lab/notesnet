@@ -1,6 +1,10 @@
 use axum::extract::State;
 
-use crate::server::{AppState, extractors::ResolvedPersona};
+use crate::server::{
+    AppState,
+    extractors::ResolvedPersona,
+    handlers::api::v1::graphql::loader::{DatabaseDataLoader, DatabaseDataLoaderExt as _},
+};
 
 pub mod loader;
 mod mutation;
@@ -28,7 +32,7 @@ pub fn router() -> axum::Router<AppState> {
              req: async_graphql_axum::GraphQLRequest| async move {
                 let req = req
                     .into_inner()
-                    .data(state.dataloader.clone())
+                    .data(DatabaseDataLoader::new_with_db(state.db.clone()))
                     .data(state)
                     .data(persona);
                 Into::<async_graphql_axum::GraphQLResponse>::into(schema.execute(req).await)

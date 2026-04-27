@@ -1,5 +1,5 @@
 pub type DatabaseDataLoader =
-    std::sync::Arc<async_graphql::dataloader::DataLoader<DatabaseLoaderInner>>;
+    std::sync::Arc<async_graphql::dataloader::DataLoader<DatabaseLoaderInner, HashMapCache>>;
 
 pub struct DatabaseLoaderInner {
     pub db: sqlx::PgPool,
@@ -10,6 +10,7 @@ mod note_revision_id;
 mod scope_id;
 mod scope_permission_id;
 
+use async_graphql::dataloader::HashMapCache;
 pub use note_id::NoteId;
 pub use note_revision_id::NoteRevisionId;
 pub use scope_id::ScopeId;
@@ -20,6 +21,7 @@ use crate::server::extractors::ResolvedPersona;
 use super::types::scope_permissions::ScopePermissions;
 
 pub trait DatabaseDataLoaderExt {
+    fn new_with_db(db: sqlx::PgPool) -> Self;
     async fn get_permission_by_scope_id(
         &self,
         scope_id: uuid::Uuid,
@@ -28,6 +30,14 @@ pub trait DatabaseDataLoaderExt {
 }
 
 impl DatabaseDataLoaderExt for DatabaseDataLoader {
+    fn new_with_db(db: sqlx::PgPool) -> Self {
+        std::sync::Arc::new(async_graphql::dataloader::DataLoader::with_cache(
+            DatabaseLoaderInner { db },
+            tokio::spawn,
+            HashMapCache::new(),
+        ))
+    }
+
     async fn get_permission_by_scope_id(
         &self,
         scope_id: uuid::Uuid,

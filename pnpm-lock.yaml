@@ -7,23 +7,10 @@ settings:
 importers:
 
   .:
-    dependencies:
+    devDependencies:
       '@apollo/client':
         specifier: ^4.1.7
         version: 4.1.7(graphql-ws@6.0.8(graphql@16.13.2)(ws@8.20.0))(graphql@16.13.2)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(rxjs@7.8.2)
-      graphql:
-        specifier: ^16.13.2
-        version: 16.13.2
-      graphql-request:
-        specifier: ^7.4.0
-        version: 7.4.0(graphql@16.13.2)
-      react:
-        specifier: ^19.2.5
-        version: 19.2.5
-      react-dom:
-        specifier: ^19.2.5
-        version: 19.2.5(react@19.2.5)
-    devDependencies:
       '@graphql-codegen/cli':
         specifier: ^6.3.0
         version: 6.3.0(@types/node@25.6.0)(graphql@16.13.2)(typescript@5.9.3)
@@ -42,9 +29,21 @@ importers:
       '@types/react-dom':
         specifier: ^19.2.3
         version: 19.2.3(@types/react@19.2.14)
+      graphql:
+        specifier: ^16.13.2
+        version: 16.13.2
+      graphql-request:
+        specifier: ^7.4.0
+        version: 7.4.0(graphql@16.13.2)
       orval:
         specifier: ^8.7.0
         version: 8.7.0(typescript@5.9.3)
+      react:
+        specifier: ^19.2.5
+        version: 19.2.5
+      react-dom:
+        specifier: ^19.2.5
+        version: 19.2.5(react@19.2.5)
       react-router:
         specifier: ^7.14.0
         version: 7.14.0(react-dom@19.2.5(react@19.2.5))(react@19.2.5)

@@ -2,6 +2,7 @@ use std::sync::Arc;
 
 use crate::server::AppState;
 use crate::server::extractors::ResolvedPersona;
+use crate::server::handlers::api::v1::graphql::loader::{DatabaseDataLoader, NoteId};
 use crate::server::handlers::api::v1::graphql::types::note::Note;
 use crate::server::handlers::api::v1::graphql::types::note_external::NoteExternal;
 use crate::server::handlers::api::v1::graphql::types::recent_notes::RecentNotes;
@@ -126,6 +127,7 @@ impl RecentNotesQuery {
 
         let persona = ctx.data_unchecked::<ResolvedPersona>();
         let state = ctx.data_unchecked::<AppState>();
+        let loader = ctx.data_unchecked::<DatabaseDataLoader>();
 
         let cursor_order_by = match order_by {
             NoteOrderBy::WrittenAt => RecentNotesCursorOrderBy::WrittenAt,
@@ -278,6 +280,10 @@ impl RecentNotesQuery {
                 })
             })
             .collect();
+
+        loader
+            .feed_many(nodes.iter().map(|n| (NoteId(n.id), n.clone())))
+            .await;
 
         Ok(RecentNotes {
             nodes,

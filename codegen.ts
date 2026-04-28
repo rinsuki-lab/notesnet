@@ -8,7 +8,10 @@ const config: CodegenConfig = {
     generates: {
         "./src/client/api/graphql/": {
             preset: "client",
-        }
+        },
+        "./schema.graphql": {
+            plugins: ["schema-ast"],
+        },
     },
     ignoreNoDocuments: true,
 }

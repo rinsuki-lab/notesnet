@@ -14,7 +14,7 @@ RUN --mount=type=bind,source=src/client,target=src/client \
     pnpm build
 
 FROM node-base AS backend-node
-RUN pnpm install --frozen-lockfile --prod
+RUN pnpm prune --prod --no-optional
 
 FROM rust:1.93-trixie AS backend-rust
 WORKDIR /notesnet

@@ -26,6 +26,7 @@ RUN --mount=type=bind,source=migrations,target=migrations \
     touch src/main.rs && cargo build --release
 
 FROM gcr.io/distroless/nodejs24-debian13:nonroot
+ENV NODE_ENV=production
 WORKDIR /notesnet
 COPY --from=backend-rust /notesnet/target/release/notesnet ./notesnet
 COPY --from=frontend /notesnet/dist ./dist

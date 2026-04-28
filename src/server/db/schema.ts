@@ -18,7 +18,7 @@ export const personasTable = pgTable(
         name: text(),
         createdAt: timestamp({ withTimezone: true }).notNull().defaultNow(),
     },
-    table => [check("CHK_personas_account_id", sql`${table.name} IS NULL OR ${table.id} = ${table.accountId}`)]
+    table => [check("CHK_personas_account_id", sql`${table.name} IS NOT NULL OR ${table.id} = ${table.accountId}`)]
 )
 
 export const scopesTable = pgTable("scopes", {

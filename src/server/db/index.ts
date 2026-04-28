@@ -4,6 +4,6 @@ import { relations } from "./relations.ts"
 
 export const db = drizzle(process.env.DATABASE_URL!, {
     casing: "snake_case",
-    logger: true,
+    logger: process.env.NODE_ENV !== "production",
     relations,
 })

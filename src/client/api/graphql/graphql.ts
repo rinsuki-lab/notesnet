@@ -83,7 +83,7 @@ export type Scope = {
   __typename?: 'Scope';
   id: Scalars['ID']['output'];
   name: Scalars['String']['output'];
-  permissions: ScopePermission;
+  permissions?: Maybe<ScopePermission>;
 };
 
 export type ScopePermission = {
@@ -108,7 +108,7 @@ export type MyQuery = { __typename?: 'Query', viewer: { __typename?: 'Viewer', i
 export type MyScopesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type MyScopesQuery = { __typename?: 'Query', viewer: { __typename?: 'Viewer', scopes: Array<{ __typename?: 'Scope', id: string, name: string, permissions: { __typename?: 'ScopePermission', canModifyNotes: boolean } }> } };
+export type MyScopesQuery = { __typename?: 'Query', viewer: { __typename?: 'Viewer', scopes: Array<{ __typename?: 'Scope', id: string, name: string, permissions?: { __typename?: 'ScopePermission', canModifyNotes: boolean } | null }> } };
 
 export type CreateNewNoteMutationVariables = Exact<{
   input: CreateNewNoteInput;

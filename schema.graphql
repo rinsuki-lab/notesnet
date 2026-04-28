@@ -55,7 +55,7 @@ type Query {
 type Scope {
   id: ID!
   name: String!
-  permissions: ScopePermission!
+  permissions: ScopePermission
 }
 
 type ScopePermission {

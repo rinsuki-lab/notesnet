@@ -15,15 +15,14 @@ export const Scope = builder.drizzleObject("scopesTable", {
                 if (parent.ownerAccountId === ctx.authorized.accountId && ctx.authorized.isDefaultPersona) {
                     return scopePermissionsObject
                 }
-                return (await db.query.scopePersonasTable.findFirst({
+                return await db.query.scopePersonasTable.findFirst({
                     where: {
                         scopeId: parent.id,
                         personaId: ctx.authorized.personaId,
                     },
                     columns: scopePermissionsObject,
-                }))!
+                })
             },
-            nullable: false,
         }),
     }),
 })

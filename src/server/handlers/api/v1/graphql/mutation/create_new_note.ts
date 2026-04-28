@@ -25,7 +25,7 @@ builder.mutationField("createNewNote", t =>
         },
         nullable: false,
         async resolve(query, root, args, ctx) {
-            const noteId = await db.transaction(async tx => {
+            return await db.transaction(async tx => {
                 const permission = await getPermission(args.input.scopeId, ctx.authorized, tx)
                 if (permission == null) throw new Error("Scope not found or no permission")
                 if (!permission.canModifyNotes) throw new Error("No permission to modify notes in this scope")
@@ -53,17 +53,16 @@ builder.mutationField("createNewNote", t =>
                     startedAt: args.input.startedAt ? new Date(args.input.startedAt) : null,
                     writtenAt: args.input.writtenAt ? new Date(args.input.writtenAt) : new Date(),
                 })
-                return note.id
+                return tx.query.notesTable
+                    .findFirst(
+                        query({
+                            where: {
+                                id: note.id,
+                            },
+                        })
+                    )
+                    .then(r => r!) // トランザクション内なので必ずある
             })
-            return db.query.notesTable
-                .findFirst(
-                    query({
-                        where: {
-                            id: noteId,
-                        },
-                    })
-                )
-                .then(r => r!)
         },
     })
 )

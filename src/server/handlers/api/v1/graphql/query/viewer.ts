@@ -14,7 +14,7 @@ builder.queryField("viewer", t =>
                         },
                     })
                 )
-                .then(r => r!)
+                .then(r => r!) // さっき認証したばっかりなのでほぼ必ずあるはず
         },
         nullable: false,
     })

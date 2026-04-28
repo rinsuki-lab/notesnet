@@ -41,7 +41,7 @@ export function ComposePost() {
         },
     })
 
-    const writableScopes = scopes.data?.viewer.scopes.filter(s => s.permissions.canModifyNotes) ?? []
+    const writableScopes = scopes.data?.viewer.scopes.filter(s => s.permissions?.canModifyNotes) ?? []
     const effectiveScopeId = writableScopes.some(s => s.id === selectedScopeId)
         ? selectedScopeId
         : (writableScopes[0]?.id ?? "")
@@ -82,7 +82,7 @@ export function ComposePost() {
                     }}
                 >
                     {scopes.data.viewer.scopes
-                        .filter(s => s.permissions.canModifyNotes)
+                        .filter(s => s.permissions?.canModifyNotes)
                         .map(scope => (
                             <option key={scope.id} value={scope.id}>
                                 {scope.name}

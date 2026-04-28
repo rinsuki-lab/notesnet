@@ -1,10 +1,10 @@
 import { useParams } from "react-router";
-import { graphql } from "../api/graphql";
+import { graphql } from "../api/graphql/index.ts";
 import { useQuery } from "@apollo/client/react";
-import { NoteContentRenderer } from "../components/NoteContentRenderer";
+import { NoteContentRenderer } from "../components/NoteContentRenderer.tsx";
 
 const queryNote = graphql(`
-    query GetNote($id: UUID!) {
+    query GetNote($id: ID!) {
         note(id: $id) {
             id
             latestRevision {

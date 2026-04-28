@@ -6,7 +6,7 @@ export function PageLogin() {
         mutation: {
             onSuccess(data) {
                 if (data.status === 200) {
-                    localStorage.setItem("notesnet_token", data.data.access_token)
+                    localStorage.setItem("notesnet_token", data.data.accessToken)
                     location.reload()
                 }
             }

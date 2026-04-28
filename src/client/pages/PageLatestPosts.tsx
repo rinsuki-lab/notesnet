@@ -5,17 +5,15 @@ import { NoteContentRenderer } from "../components/NoteContentRenderer"
 
 const queryRecentNotes = graphql(`
     query RecentNotes {
-        recentNotes(first: 20) {
-            nodes {
+        recentNotes {
+            id
+            latestRevision {
                 id
-                latestRevision {
-                    id
-                    summary
-                    writtenAt
-                    contentType
-                    content
-                    attributes
-                }
+                summary
+                writtenAt
+                contentType
+                content
+                attributes
             }
         }
     }
@@ -28,7 +26,7 @@ export function PageLatestPosts() {
     if (error || !data) return <div>{":("} {error?.message}</div>
 
     return <div>
-        {data.recentNotes.nodes.map(item => {
+        {data.recentNotes.map(item => {
             const rev = item.latestRevision
             if (!rev) return null
             return <div key={rev.id}>

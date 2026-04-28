@@ -1,5 +1,5 @@
 import { useCallback, useState } from "react"
-import { graphql } from "../api/graphql"
+import { graphql } from "../api/graphql/index.ts"
 import { useQuery, useMutation, useApolloClient } from "@apollo/client/react"
 
 import "./ComposePost.css"
@@ -19,7 +19,7 @@ const queryMyScopes = graphql(`
 `)
 
 const mutationCreateNewNote = graphql(`
-    mutation CreateNewNote($input: CreateNoteInput!) {
+    mutation CreateNewNote($input: CreateNewNoteInput!) {
         createNewNote(input: $input) {
             id
         }
@@ -57,7 +57,6 @@ export function ComposePost() {
                     contentType: "text/plain",
                     attributes: {},
                     textForSearch: text,
-                    parents: [],
                     startedAt: null,
                     writtenAt: null,
                     summary: null,

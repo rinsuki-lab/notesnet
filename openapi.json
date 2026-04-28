@@ -1,132 +1,96 @@
 {
   "openapi": "3.1.0",
   "info": {
-    "title": "notesnet",
-    "description": "",
-    "license": {
-      "name": ""
-    },
-    "version": "0.1.0"
+    "title": "NotesNet API",
+    "description": "Development documentation",
+    "version": "0.0.0"
   },
   "paths": {
     "/api/internal/accounts/create": {
       "post": {
-        "tags": [
-          "accounts::create"
-        ],
         "operationId": "create_account",
+        "responses": {
+          "201": {
+            "description": "作成成功"
+          }
+        },
         "requestBody": {
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/CreateUserRequest"
+                "type": "object",
+                "properties": {
+                  "username": {
+                    "type": "string",
+                    "minLength": 4,
+                    "maxLength": 20,
+                    "pattern": "^[a-z0-9]{4,20}$"
+                  },
+                  "password": {
+                    "type": "string",
+                    "minLength": 16,
+                    "maxLength": 128
+                  }
+                },
+                "required": [
+                  "username",
+                  "password"
+                ]
               }
             }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "Account created"
-          },
-          "409": {
-            "description": "Username already in use"
-          },
-          "422": {
-            "description": "Invalid username or password"
-          },
-          "500": {
-            "description": "Internal server error"
           }
         }
       }
     },
     "/api/internal/sessions/create": {
       "post": {
-        "tags": [
-          "sessions::create"
-        ],
         "operationId": "create_session",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateSessionRequest"
-              }
-            }
-          },
-          "required": true
-        },
         "responses": {
           "200": {
-            "description": "Session created",
+            "description": "ログイン成功",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/CreateSessionResponse"
+                  "type": "object",
+                  "properties": {
+                    "accessToken": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "accessToken"
+                  ]
                 }
               }
             }
-          },
-          "401": {
-            "description": "Invalid credentials"
-          },
-          "500": {
-            "description": "Internal server error"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "username": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string",
+                    "maxLength": 128
+                  }
+                },
+                "required": [
+                  "username",
+                  "password"
+                ]
+              }
+            }
           }
         }
       }
     }
   },
-  "components": {
-    "schemas": {
-      "CreateSessionRequest": {
-        "type": "object",
-        "required": [
-          "username",
-          "password"
-        ],
-        "properties": {
-          "password": {
-            "type": "string"
-          },
-          "username": {
-            "type": "string"
-          }
-        }
-      },
-      "CreateSessionResponse": {
-        "type": "object",
-        "required": [
-          "access_token"
-        ],
-        "properties": {
-          "access_token": {
-            "type": "string"
-          }
-        }
-      },
-      "CreateUserRequest": {
-        "type": "object",
-        "required": [
-          "username",
-          "password"
-        ],
-        "properties": {
-          "password": {
-            "type": "string"
-          },
-          "username": {
-            "type": "string"
-          }
-        }
-      }
-    },
-    "securitySchemes": {
-      "bearer": {
-        "type": "http",
-        "scheme": "bearer"
-      }
-    }
-  }
+  "components": {}
 }

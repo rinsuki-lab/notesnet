@@ -3,15 +3,30 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "vite build && node ./assets-compressor.mts",
-    "dev:refresh": "cargo run -- --dump-schema-and-exit && rm -r src/client/api/internal/ && orval && graphql-codegen"
+    "dev:refresh": "mkdir -p src/client/api/internal/; node src/server/index.ts --dump-schema-and-exit && rm -r src/client/api/internal/ && orval && graphql-codegen"
   },
   "keywords": [],
   "author": "",
   "packageManager": "pnpm@10.29.3",
   "dependencies": {
+    "@hono/node-server": "^1.19.14",
+    "@hono/standard-validator": "^0.2.2",
+    "@pothos/core": "^4.12.0",
+    "@pothos/plugin-drizzle": "^0.17.1",
+    "@pothos/plugin-simple-objects": "^4.1.3",
+    "@valibot/to-json-schema": "^1.6.0",
+    "argon2": "^0.44.0",
+    "drizzle-orm": "1.0.0-beta.22",
+    "graphql-scalars": "^1.25.0",
+    "graphql-yoga": "^5.21.0",
+    "hono": "^4.12.14",
+    "hono-openapi": "^1.3.0",
+    "pg": "^8.20.0",
+    "valibot": "^1.3.1"
   },
   "devDependencies": {
     "@apollo/client": "^4.1.7",
@@ -27,6 +42,7 @@
     "react": "^19.2.5",
     "react-dom": "^19.2.5",
     "react-router": "^7.14.0",
+    "typescript": "6.0.3",
     "vite": "^8.0.8"
   }
 }

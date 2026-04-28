@@ -6,6 +6,6 @@
  * OpenAPI spec version: 0.0.0
  */
 
-export * from './createAccountBody';
-export * from './createSession200';
-export * from './createSessionBody';
+export type CreateSession200 = {
+  accessToken: string;
+};

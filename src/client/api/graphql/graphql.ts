@@ -14,44 +14,21 @@ export type Scalars = {
   Boolean: { input: boolean; output: boolean; }
   Int: { input: number; output: number; }
   Float: { input: number; output: number; }
-  /**
-   * Implement the DateTime<Utc> scalar
-   *
-   * The input/output is a string in RFC3339 format.
-   */
+  /** A date-time string at UTC, such as 2007-12-03T10:15:30Z, compliant with the `date-time` format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar.This scalar is serialized to a string in ISO 8601 format and parsed from a string in ISO 8601 format. */
   DateTime: { input: any; output: any; }
-  /** A scalar that can represent any JSON value. */
+  /** The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf). */
   JSON: { input: any; output: any; }
-  /**
-   * A UUID is a unique 128-bit number, stored as 16 octets. UUIDs are parsed as
-   * Strings within GraphQL. UUIDs are used to assign unique identifiers to
-   * entities without requiring a central allocating authority.
-   *
-   * # References
-   *
-   * * [Wikipedia: Universally Unique Identifier](http://en.wikipedia.org/wiki/Universally_unique_identifier)
-   * * [RFC4122: A Universally Unique Identifier (UUID) URN Namespace](http://tools.ietf.org/html/rfc4122)
-   */
-  UUID: { input: any; output: any; }
 };
 
-export type CreateNoteInput = {
+export type CreateNewNoteInput = {
   attributes: Scalars['JSON']['input'];
   content: Scalars['JSON']['input'];
   contentType: Scalars['String']['input'];
-  parents?: Array<CreateNoteParentInput>;
-  scopeId: Scalars['UUID']['input'];
+  scopeId: Scalars['ID']['input'];
   startedAt?: InputMaybe<Scalars['DateTime']['input']>;
   summary?: InputMaybe<Scalars['String']['input']>;
   textForSearch: Scalars['String']['input'];
   writtenAt?: InputMaybe<Scalars['DateTime']['input']>;
-};
-
-export type CreateNoteParentInput = {
-  orderChild?: InputMaybe<Scalars['Int']['input']>;
-  parentNoteId: Scalars['UUID']['input'];
-  shouldListedAsChild?: Scalars['Boolean']['input'];
-  shouldListedAsParent?: Scalars['Boolean']['input'];
 };
 
 export type Mutation = {
@@ -61,13 +38,13 @@ export type Mutation = {
 
 
 export type MutationCreateNewNoteArgs = {
-  input: CreateNoteInput;
+  input: CreateNewNoteInput;
 };
 
 export type Note = {
   __typename?: 'Note';
   external?: Maybe<NoteExternal>;
-  id: Scalars['UUID']['output'];
+  id: Scalars['ID']['output'];
   latestRevision?: Maybe<NoteRevision>;
 };
 
@@ -77,17 +54,12 @@ export type NoteExternal = {
   service: Scalars['String']['output'];
 };
 
-export enum NoteOrderBy {
-  InsertedAt = 'INSERTED_AT',
-  WrittenAt = 'WRITTEN_AT'
-}
-
 export type NoteRevision = {
   __typename?: 'NoteRevision';
   attributes: Scalars['JSON']['output'];
   content: Scalars['JSON']['output'];
   contentType: Scalars['String']['output'];
-  id: Scalars['UUID']['output'];
+  id: Scalars['ID']['output'];
   insertedAt: Scalars['DateTime']['output'];
   startedAt?: Maybe<Scalars['DateTime']['output']>;
   summary?: Maybe<Scalars['String']['output']>;
@@ -98,31 +70,24 @@ export type NoteRevision = {
 export type Query = {
   __typename?: 'Query';
   note?: Maybe<Note>;
-  recentNotes: RecentNotes;
+  recentNotes?: Maybe<Array<Note>>;
   viewer: Viewer;
 };
 
 
 export type QueryNoteArgs = {
-  id: Scalars['UUID']['input'];
+  id: Scalars['ID']['input'];
 };
 
-
-export type QueryRecentNotesArgs = {
-  cursor?: InputMaybe<Scalars['String']['input']>;
-  first: Scalars['Int']['input'];
-  orderBy?: NoteOrderBy;
+export type Scope = {
+  __typename?: 'Scope';
+  id: Scalars['ID']['output'];
+  name: Scalars['String']['output'];
+  permissions: ScopePermission;
 };
 
-export type RecentNotes = {
-  __typename?: 'RecentNotes';
-  nextCursor?: Maybe<Scalars['String']['output']>;
-  nodes: Array<Note>;
-  prevCursor?: Maybe<Scalars['String']['output']>;
-};
-
-export type ScopePermissions = {
-  __typename?: 'ScopePermissions';
+export type ScopePermission = {
+  __typename?: 'ScopePermission';
   canAddTheirNotesToChild: Scalars['Boolean']['output'];
   canModifyNotes: Scalars['Boolean']['output'];
   canReadNoteRevisions: Scalars['Boolean']['output'];
@@ -130,50 +95,43 @@ export type ScopePermissions = {
 
 export type Viewer = {
   __typename?: 'Viewer';
-  id: Scalars['UUID']['output'];
+  id: Scalars['ID']['output'];
   name: Scalars['String']['output'];
-  scopes: Array<ViewerScope>;
-};
-
-export type ViewerScope = {
-  __typename?: 'ViewerScope';
-  id: Scalars['String']['output'];
-  name: Scalars['String']['output'];
-  permissions: ScopePermissions;
+  scopes: Array<Scope>;
 };
 
 export type MyQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type MyQuery = { __typename?: 'Query', viewer: { __typename?: 'Viewer', id: any, name: string } };
+export type MyQuery = { __typename?: 'Query', viewer: { __typename?: 'Viewer', id: string, name: string } };
 
 export type MyScopesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type MyScopesQuery = { __typename?: 'Query', viewer: { __typename?: 'Viewer', scopes: Array<{ __typename?: 'ViewerScope', id: string, name: string, permissions: { __typename?: 'ScopePermissions', canModifyNotes: boolean } }> } };
+export type MyScopesQuery = { __typename?: 'Query', viewer: { __typename?: 'Viewer', scopes: Array<{ __typename?: 'Scope', id: string, name: string, permissions: { __typename?: 'ScopePermission', canModifyNotes: boolean } }> } };
 
 export type CreateNewNoteMutationVariables = Exact<{
-  input: CreateNoteInput;
+  input: CreateNewNoteInput;
 }>;
 
 
-export type CreateNewNoteMutation = { __typename?: 'Mutation', createNewNote: { __typename?: 'Note', id: any } };
+export type CreateNewNoteMutation = { __typename?: 'Mutation', createNewNote: { __typename?: 'Note', id: string } };
 
 export type RecentNotesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type RecentNotesQuery = { __typename?: 'Query', recentNotes: { __typename?: 'RecentNotes', nodes: Array<{ __typename?: 'Note', id: any, latestRevision?: { __typename?: 'NoteRevision', id: any, summary?: string | null, writtenAt: any, contentType: string, content: any, attributes: any } | null }> } };
+export type RecentNotesQuery = { __typename?: 'Query', recentNotes?: Array<{ __typename?: 'Note', id: string, latestRevision?: { __typename?: 'NoteRevision', id: string, summary?: string | null, writtenAt: any, contentType: string, content: any, attributes: any } | null }> | null };
 
 export type GetNoteQueryVariables = Exact<{
-  id: Scalars['UUID']['input'];
+  id: Scalars['ID']['input'];
 }>;
 
 
-export type GetNoteQuery = { __typename?: 'Query', note?: { __typename?: 'Note', id: any, latestRevision?: { __typename?: 'NoteRevision', id: any, summary?: string | null, writtenAt: any, contentType: string, content: any, attributes: any } | null } | null };
+export type GetNoteQuery = { __typename?: 'Query', note?: { __typename?: 'Note', id: string, latestRevision?: { __typename?: 'NoteRevision', id: string, summary?: string | null, writtenAt: any, contentType: string, content: any, attributes: any } | null } | null };
 
 
 export const MyDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"My"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"viewer"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]} as unknown as DocumentNode<MyQuery, MyQueryVariables>;
 export const MyScopesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"MyScopes"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"viewer"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"scopes"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"permissions"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"canModifyNotes"}}]}}]}}]}}]}}]} as unknown as DocumentNode<MyScopesQuery, MyScopesQueryVariables>;
-export const CreateNewNoteDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"CreateNewNote"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"CreateNoteInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createNewNote"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]} as unknown as DocumentNode<CreateNewNoteMutation, CreateNewNoteMutationVariables>;
-export const RecentNotesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"RecentNotes"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"recentNotes"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"first"},"value":{"kind":"IntValue","value":"20"}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"nodes"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"latestRevision"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"summary"}},{"kind":"Field","name":{"kind":"Name","value":"writtenAt"}},{"kind":"Field","name":{"kind":"Name","value":"contentType"}},{"kind":"Field","name":{"kind":"Name","value":"content"}},{"kind":"Field","name":{"kind":"Name","value":"attributes"}}]}}]}}]}}]}}]} as unknown as DocumentNode<RecentNotesQuery, RecentNotesQueryVariables>;
-export const GetNoteDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetNote"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"UUID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"note"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"latestRevision"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"summary"}},{"kind":"Field","name":{"kind":"Name","value":"writtenAt"}},{"kind":"Field","name":{"kind":"Name","value":"contentType"}},{"kind":"Field","name":{"kind":"Name","value":"content"}},{"kind":"Field","name":{"kind":"Name","value":"attributes"}}]}}]}}]}}]} as unknown as DocumentNode<GetNoteQuery, GetNoteQueryVariables>;
+export const CreateNewNoteDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"CreateNewNote"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"CreateNewNoteInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createNewNote"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]} as unknown as DocumentNode<CreateNewNoteMutation, CreateNewNoteMutationVariables>;
+export const RecentNotesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"RecentNotes"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"recentNotes"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"latestRevision"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"summary"}},{"kind":"Field","name":{"kind":"Name","value":"writtenAt"}},{"kind":"Field","name":{"kind":"Name","value":"contentType"}},{"kind":"Field","name":{"kind":"Name","value":"content"}},{"kind":"Field","name":{"kind":"Name","value":"attributes"}}]}}]}}]}}]} as unknown as DocumentNode<RecentNotesQuery, RecentNotesQueryVariables>;
+export const GetNoteDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetNote"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"note"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"latestRevision"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"summary"}},{"kind":"Field","name":{"kind":"Name","value":"writtenAt"}},{"kind":"Field","name":{"kind":"Name","value":"contentType"}},{"kind":"Field","name":{"kind":"Name","value":"content"}},{"kind":"Field","name":{"kind":"Name","value":"attributes"}}]}}]}}]}}]} as unknown as DocumentNode<GetNoteQuery, GetNoteQueryVariables>;

@@ -1,5 +1,4 @@
 use sqlx::PgPool;
-use tokio::{fs::File, io::AsyncWriteExt as _};
 
 fn init_registry() {
     use tracing_subscriber::layer::SubscriberExt as _;

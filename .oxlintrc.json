@@ -11,6 +11,16 @@
   "rules": {
     "eslint/no-unused-vars": ["error", {
       "argsIgnorePattern": "^t$"
+    }],
+    "typescript/no-base-to-string": ["error", {
+      "ignoredTypeNames": ["ErrorLike"]
+    }],
+    "typescript/restrict-template-expressions": ["error", {
+      "allow": [{
+        "from": "package",
+        "name": "ErrorLike",
+        "package": "@apollo/client"
+      }]
     }]
   },
   "env": {

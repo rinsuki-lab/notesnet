@@ -1,5 +1,6 @@
-import { Hono } from "hono";
-import createRouter from "./create.ts";
+import { Hono } from "hono"
+
+import createRouter from "./create.ts"
 
 const router = new Hono()
 

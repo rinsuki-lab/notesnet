@@ -11,11 +11,11 @@ export default defineConfig({
                 mutator: {
                     path: "./src/client/api/client.ts",
                     name: "customFetch",
-                }
-            }
+                },
+            },
         },
         input: {
             target: "./openapi.json",
-        }
-    }
+        },
+    },
 })

@@ -1,8 +1,9 @@
-import { Hono } from "hono";
-import { authorize } from "../../../../extractors/access_token.ts";
-import { createYoga } from "graphql-yoga";
-import { type OurContext } from "./builder.ts";
-import { schema } from "./schema.ts";
+import { createYoga } from "graphql-yoga"
+import { Hono } from "hono"
+
+import { authorize } from "../../../../extractors/access_token.ts"
+import { type OurContext } from "./builder.ts"
+import { schema } from "./schema.ts"
 
 const yoga = createYoga<OurContext, {}>({
     schema,

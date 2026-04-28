@@ -1,22 +1,24 @@
-import { createMiddleware } from "hono/factory";
-import { db } from "../db/index.ts";
-import { createHash } from "node:crypto";
-import { eq, or, type TableFilter } from "drizzle-orm";
-import { personasTable, scopePermissionsObject, scopePersonasTable, scopesTable } from "../db/schema.ts";
+import { createHash } from "node:crypto"
+
+import { eq, or, type TableFilter } from "drizzle-orm"
+import { createMiddleware } from "hono/factory"
+
+import { db } from "../db/index.ts"
+import { personasTable, scopePermissionsObject, scopePersonasTable, scopesTable } from "../db/schema.ts"
 
 export type AuthorizedResult = {
-    accessTokenId: string,
-    accountId: string,
-    personaId: string,
-    isDefaultPersona: boolean,
-    anyPersonaAllowed: boolean,
-    isSuperToken: boolean,
+    accessTokenId: string
+    accountId: string
+    personaId: string
+    isDefaultPersona: boolean
+    anyPersonaAllowed: boolean
+    isSuperToken: boolean
 }
 
 export function authorize<Required extends boolean>(required: Required) {
     return createMiddleware<{
         Variables: {
-            authorized: AuthorizedResult | (Required extends true ? never : undefined),
+            authorized: AuthorizedResult | (Required extends true ? never : undefined)
         }
     }>(async (c, next) => {
         const authHeader = c.req.header("Authorization")
@@ -39,7 +41,7 @@ export function authorize<Required extends boolean>(required: Required) {
             where: {
                 id: { eq: tokenId },
                 hashedToken: {
-                    eq: tokenHash
+                    eq: tokenHash,
                 },
                 revokedAt: { isNull: true },
             },
@@ -59,12 +61,14 @@ export function authorize<Required extends boolean>(required: Required) {
 
         const persona = await db.query.personasTable.findFirst({
             where: {
-                AND: ([
-                    { accountId: { eq: accessToken.accountId } },
-                    (accessToken.personaId != null ? { id: accessToken.personaId } : null),
-                    (specifiedPersonaId != null ? { id: specifiedPersonaId } : null),
-                    (accessToken.personaId == null && specifiedPersonaId == null ? { name: { isNull: true } } : null),
-                ] satisfies (null|TableFilter<typeof personasTable>)[]).filter(x => x != null),
+                AND: (
+                    [
+                        { accountId: { eq: accessToken.accountId } },
+                        accessToken.personaId != null ? { id: accessToken.personaId } : null,
+                        specifiedPersonaId != null ? { id: specifiedPersonaId } : null,
+                        accessToken.personaId == null && specifiedPersonaId == null ? { name: { isNull: true } } : null,
+                    ] satisfies (null | TableFilter<typeof personasTable>)[]
+                ).filter(x => x != null),
             },
             columns: {
                 id: true,
@@ -97,10 +101,10 @@ export function makeNotesWhereQueryObjectFromAuthorizedResult(auth: AuthorizedRe
                 {
                     permissions: {
                         personaId: auth.personaId,
-                    }
-                }
-            ]
-        }
+                    },
+                },
+            ],
+        },
     }
 }
 
@@ -111,7 +115,11 @@ export function makeNotesWhereQueryFromAuthorizedResult(auth: AuthorizedResult) 
     )
 }
 
-export async function getPermission(scopeId: string, auth: AuthorizedResult, database: Parameters<Parameters<typeof db.transaction>[0]>[0]) {
+export async function getPermission(
+    scopeId: string,
+    auth: AuthorizedResult,
+    database: Parameters<Parameters<typeof db.transaction>[0]>[0]
+) {
     const scope = await database.query.scopesTable.findFirst({
         where: {
             id: scopeId,
@@ -124,14 +132,14 @@ export async function getPermission(scopeId: string, auth: AuthorizedResult, dat
                 },
                 limit: 1,
             },
-        }
+        },
     })
 
     if (scope == null) return null
     if (scope.ownerAccountId === auth.accountId && auth.isDefaultPersona) {
         return scopePermissionsObject
     }
-    
+
     const perm = scope.permissions[0]
     if (perm == null) return null
 

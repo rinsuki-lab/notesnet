@@ -1,7 +1,8 @@
-import { useParams } from "react-router";
-import { graphql } from "../api/graphql/index.ts";
-import { useQuery } from "@apollo/client/react";
-import { NoteContentRenderer } from "../components/NoteContentRenderer.tsx";
+import { useQuery } from "@apollo/client/react"
+import { useParams } from "react-router"
+
+import { graphql } from "../api/graphql/index.ts"
+import { NoteContentRenderer } from "../components/NoteContentRenderer.tsx"
 
 const queryNote = graphql(`
     query GetNote($id: ID!) {
@@ -17,19 +18,28 @@ const queryNote = graphql(`
             }
         }
     }
-`);
+`)
 
 export function PageNoteDetail() {
-    const id = useParams().noteId!;
-    const { data, loading, error } = useQuery(queryNote, { variables: { id } });
+    const id = useParams().noteId!
+    const { data, loading, error } = useQuery(queryNote, { variables: { id } })
 
-    if (loading) return <div>Loading...</div>;
-    if (error || !data?.note) return <div>{":("} {error?.message}</div>;
+    if (loading) return <div>Loading...</div>
+    if (error || !data?.note)
+        return (
+            <div>
+                {":("} {error?.message}
+            </div>
+        )
 
-    const revision = data.note.latestRevision;
-    return revision && <div>
-        <h2>{revision.summary}</h2>
-        <p>{revision.writtenAt}</p>
-        <NoteContentRenderer note={revision} />
-    </div>;
+    const revision = data.note.latestRevision
+    return (
+        revision && (
+            <div>
+                <h2>{revision.summary}</h2>
+                <p>{revision.writtenAt}</p>
+                <NoteContentRenderer note={revision} />
+            </div>
+        )
+    )
 }

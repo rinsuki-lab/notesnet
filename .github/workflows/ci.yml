@@ -10,55 +10,55 @@ jobs:
       postgres:
         image: postgres:18
         ports:
-        - 5432:5432
+          - 5432:5432
         env:
           POSTGRES_PASSWORD: password
     env:
       DATABASE_URL: postgres://postgres:password@localhost:5432/postgres
     steps:
-    - uses: actions/checkout@v6
-    - uses: actions/setup-node@v6
-      with:
-        node-version: 24
-    - run: |
-        echo "/home/linuxbrew/.linuxbrew/bin" >> $GITHUB_PATH
-        echo "/home/linuxbrew/.linuxbrew/sbin" >> $GITHUB_PATH
-    - run: brew install sqlx-cli pg-schema-diff sqlx-cli
-    - run: sqlx migrate run
-    - run: ./generate_migrate.py check_diffes
-    - run: git add -A && git diff --exit-code
-    - run: corepack enable && pnpm install
-    - run: pnpm lint
-    - run: cargo fmt --check
-    - run: pnpm dev:refresh
-    - run: git add -A && git diff --exit-code
-    - run: cargo sqlx prepare
-    - run: git add -A && git diff --exit-code
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+      - run: |
+          echo "/home/linuxbrew/.linuxbrew/bin" >> $GITHUB_PATH
+          echo "/home/linuxbrew/.linuxbrew/sbin" >> $GITHUB_PATH
+      - run: brew install sqlx-cli pg-schema-diff sqlx-cli
+      - run: sqlx migrate run
+      - run: ./generate_migrate.py check_diffes
+      - run: git add -A && git diff --exit-code
+      - run: corepack enable && pnpm install
+      - run: pnpm lint
+      - run: cargo fmt --check
+      - run: pnpm dev:refresh
+      - run: git add -A && git diff --exit-code
+      - run: cargo sqlx prepare
+      - run: git add -A && git diff --exit-code
   docker:
     runs-on: ubuntu-latest
     permissions:
       contents: read
       packages: write
     steps:
-    - uses: actions/checkout@v6
-    - uses: docker/setup-buildx-action@v3
-    - uses: docker/login-action@v3
-      with:
-        registry: ghcr.io
-        username: ${{ github.actor }}
-        password: ${{ secrets.GITHUB_TOKEN }}
-    - id: meta
-      uses: docker/metadata-action@v5
-      with:
-        images: |
-          ghcr.io/${{ github.repository }}
-        tags: |
-          type=ref,event=branch
-    - uses: docker/build-push-action@v6
-      with:
-        context: .
-        push: true
-        tags: ${{ steps.meta.outputs.tags }}
-        labels: ${{ steps.meta.outputs.labels }}
-        cache-from: type=gha
-        cache-to: type=gha,mode=max
+      - uses: actions/checkout@v6
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: |
+            ghcr.io/${{ github.repository }}
+          tags: |
+            type=ref,event=branch
+      - uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max

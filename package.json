@@ -2,8 +2,10 @@
   "name": "notesnet",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "keywords": [],
+  "author": "",
   "type": "module",
+  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "vite build && node ./assets-compressor.mts",
@@ -11,9 +13,6 @@
     "lint": "oxlint",
     "fix": "oxlint --fix --fix-suggestions"
   },
-  "keywords": [],
-  "author": "",
-  "packageManager": "pnpm@10.29.3",
   "dependencies": {
     "@hono/node-server": "^1.19.14",
     "@hono/standard-validator": "^0.2.2",
@@ -50,5 +49,6 @@
     "react-router": "^7.14.0",
     "typescript": "6.0.3",
     "vite": "^8.0.8"
-  }
+  },
+  "packageManager": "pnpm@10.29.3"
 }

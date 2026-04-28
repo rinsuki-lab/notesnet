@@ -1,5 +1,5 @@
-import { sql } from "drizzle-orm";
-import { boolean, check, pgTable, text, timestamp, uuid, bytea, jsonb } from "drizzle-orm/pg-core";
+import { sql } from "drizzle-orm"
+import { boolean, check, pgTable, text, timestamp, uuid, bytea, jsonb } from "drizzle-orm/pg-core"
 
 export const accountsTable = pgTable("accounts", {
     id: uuid().primaryKey(),
@@ -8,25 +8,33 @@ export const accountsTable = pgTable("accounts", {
     createdAt: timestamp({ withTimezone: true }).notNull().defaultNow(),
 })
 
-export const personasTable = pgTable("personas", {
-    id: uuid().primaryKey(),
-    accountId: uuid().notNull().references(() => accountsTable.id),
-    name: text(),
-    createdAt: timestamp({ withTimezone: true }).notNull().defaultNow(),
-}, table => [
-    check("CHK_personas_account_id", sql`${table.name} IS NULL OR ${table.id} = ${table.accountId}`),
-])
+export const personasTable = pgTable(
+    "personas",
+    {
+        id: uuid().primaryKey(),
+        accountId: uuid()
+            .notNull()
+            .references(() => accountsTable.id),
+        name: text(),
+        createdAt: timestamp({ withTimezone: true }).notNull().defaultNow(),
+    },
+    table => [check("CHK_personas_account_id", sql`${table.name} IS NULL OR ${table.id} = ${table.accountId}`)]
+)
 
 export const scopesTable = pgTable("scopes", {
     id: uuid().primaryKey(),
     name: text().notNull(),
-    ownerAccountId: uuid().notNull().references(() => accountsTable.id),
+    ownerAccountId: uuid()
+        .notNull()
+        .references(() => accountsTable.id),
     createdAt: timestamp({ withTimezone: true }).notNull().defaultNow(),
 })
 
 export const accessTokensTable = pgTable("access_tokens", {
     id: uuid().primaryKey(),
-    accountId: uuid().notNull().references(() => accountsTable.id),
+    accountId: uuid()
+        .notNull()
+        .references(() => accountsTable.id),
     personaId: uuid().references(() => personasTable.id),
     hashedToken: bytea().notNull(),
     description: text().notNull(),
@@ -40,8 +48,12 @@ export const accessTokensTable = pgTable("access_tokens", {
 
 export const scopePersonasTable = pgTable("scope_personas", {
     id: uuid().primaryKey(),
-    scopeId: uuid().notNull().references(() => scopesTable.id),
-    personaId: uuid().notNull().references(() => personasTable.id),
+    scopeId: uuid()
+        .notNull()
+        .references(() => scopesTable.id),
+    personaId: uuid()
+        .notNull()
+        .references(() => personasTable.id),
 
     canReadNoteRevisions: boolean().notNull().default(false),
     canModifyNotes: boolean().notNull().default(false),
@@ -60,16 +72,24 @@ export const scopePermissionsKeys = Object.keys(scopePermissionsObject) as (keyo
 
 export const notesTable = pgTable("notes", {
     id: uuid().primaryKey(),
-    authorPersonaId: uuid().notNull().references(() => personasTable.id),
-    scopeId: uuid().notNull().references(() => scopesTable.id),
+    authorPersonaId: uuid()
+        .notNull()
+        .references(() => personasTable.id),
+    scopeId: uuid()
+        .notNull()
+        .references(() => scopesTable.id),
     externalService: text(),
     externalId: text(),
 })
 
 export const noteRevisionsTable = pgTable("note_revisions", {
     id: uuid().primaryKey(),
-    noteId: uuid().notNull().references(() => notesTable.id),
-    authorPersonaId: uuid().notNull().references(() => personasTable.id),
+    noteId: uuid()
+        .notNull()
+        .references(() => notesTable.id),
+    authorPersonaId: uuid()
+        .notNull()
+        .references(() => personasTable.id),
     nextRevisionId: uuid(),
     summary: text(),
     /**

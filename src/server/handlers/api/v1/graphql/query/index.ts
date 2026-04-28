@@ -1,7 +1,7 @@
-import { builder } from "../builder.ts";
+import { builder } from "../builder.ts"
 
 builder.queryType({
-    fields: t => ({})
+    fields: t => ({}),
 })
 
 import "./viewer.ts"

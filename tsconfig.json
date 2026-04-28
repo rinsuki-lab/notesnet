@@ -43,6 +43,6 @@
 
     "allowImportingTsExtensions": true,
     "noEmit": true,
-    "erasableSyntaxOnly": true,
+    "erasableSyntaxOnly": true
   }
 }

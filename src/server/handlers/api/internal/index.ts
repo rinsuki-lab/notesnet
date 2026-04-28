@@ -1,4 +1,5 @@
 import { Hono } from "hono"
+
 import accountsRouter from "./accounts/index.ts"
 import sessionsRouter from "./sessions/index.ts"
 

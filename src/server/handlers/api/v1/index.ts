@@ -1,6 +1,6 @@
-import { Hono } from "hono";
+import { Hono } from "hono"
 
-import graphqlRouter from "./graphql/index.ts";
+import graphqlRouter from "./graphql/index.ts"
 
 const router = new Hono()
 

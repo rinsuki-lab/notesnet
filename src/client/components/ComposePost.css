@@ -10,7 +10,7 @@
     grid-template-areas:
         "scope send"
         "text send";
-    
+
     & > .scope-select {
         grid-area: scope;
     }

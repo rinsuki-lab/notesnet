@@ -1,11 +1,11 @@
-import { builder } from "../builder.ts";
-import { NoteRevision } from "./note_revision.ts";
+import { builder } from "../builder.ts"
+import { NoteRevision } from "./note_revision.ts"
 
 export const NoteExternal = builder.simpleObject("NoteExternal", {
     fields: t => ({
         service: t.string({ nullable: false }),
         id: t.string({ nullable: false }),
-    })
+    }),
 })
 
 export const Note = builder.drizzleObject("notesTable", {
@@ -21,7 +21,7 @@ export const Note = builder.drizzleObject("notesTable", {
                 columns: {
                     externalId: true,
                     externalService: true,
-                }
+                },
             },
             resolve(note) {
                 if (note.externalId == null || note.externalService == null) {
@@ -31,7 +31,7 @@ export const Note = builder.drizzleObject("notesTable", {
                     id: note.externalId,
                     service: note.externalService,
                 }
-            }
-        })
+            },
+        }),
     }),
 })

@@ -1,7 +1,7 @@
-import { db } from "../../../../../db/index.ts";
-import { scopePermissionsObject } from "../../../../../db/schema.ts";
-import { builder } from "../builder.ts";
-import { ScopePermission } from "./scope_permission.ts";
+import { db } from "../../../../../db/index.ts"
+import { scopePermissionsObject } from "../../../../../db/schema.ts"
+import { builder } from "../builder.ts"
+import { ScopePermission } from "./scope_permission.ts"
 
 export const Scope = builder.drizzleObject("scopesTable", {
     variant: "Scope",
@@ -24,7 +24,6 @@ export const Scope = builder.drizzleObject("scopesTable", {
                 }))!
             },
             nullable: false,
-        })
-    })
+        }),
+    }),
 })
-

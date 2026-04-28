@@ -1,6 +1,6 @@
-import { DrizzleQueryError } from "drizzle-orm";
+import { DrizzleQueryError } from "drizzle-orm"
 
-type ConstraintError = DrizzleQueryError & { cause: { constraint: string } };
+type ConstraintError = DrizzleQueryError & { cause: { constraint: string } }
 
 export function isConstraintError(error: unknown): error is ConstraintError {
     if (!(error instanceof DrizzleQueryError)) return false

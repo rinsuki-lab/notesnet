@@ -1,4 +1,4 @@
-import { Hono } from "hono";
+import { Hono } from "hono"
 
 import internalRouter from "./internal/index.ts"
 import v1Router from "./v1/index.ts"

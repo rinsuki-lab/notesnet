@@ -12,8 +12,8 @@ const client = new ApolloClient({
     link: new HttpLink({
         uri: "/api/v1/graphql",
         fetch(input, init) {
-            if (init?.body != null) {
-                const body = JSON.parse(init.body.toString())
+            if (typeof input === "string" && init?.body != null && typeof init.body === "string") {
+                const body = JSON.parse(init.body)
                 input += "#" + body.operationName
             }
             const req = new Request(input, init)

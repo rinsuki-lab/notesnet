@@ -1,13 +1,6 @@
 import { serve } from "@hono/node-server";
-import { drizzle } from "drizzle-orm/node-postgres";
-import { Hono } from "hono";
-import { describeRoute, generateSpecs, openAPIRouteHandler, resolver, validator } from "hono-openapi";
+import { generateSpecs } from "hono-openapi";
 import { writeFile } from "node:fs/promises";
-import * as v from "valibot"
-import { accountsTable, personasTable, scopesTable } from "./db/schema.ts";
-import argon2 from "argon2"
-import { DrizzleQueryError } from "drizzle-orm";
-import { isConstraintError } from "./db/utils.ts";
 import app from "./handlers/index.ts"
 
 

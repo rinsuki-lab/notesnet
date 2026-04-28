@@ -7,7 +7,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "vite build && node ./assets-compressor.mts",
-    "dev:refresh": "mkdir -p src/client/api/internal/; node src/server/index.ts --dump-schema-and-exit && rm -r src/client/api/internal/ && orval && graphql-codegen"
+    "dev:refresh": "mkdir -p src/client/api/internal/; node src/server/index.ts --dump-schema-and-exit && rm -r src/client/api/internal/ && orval && graphql-codegen",
+    "lint": "oxlint",
+    "fix": "oxlint --fix --fix-suggestions"
   },
   "keywords": [],
   "author": "",
@@ -36,9 +38,12 @@
     "@types/node": "^25.6.0",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
+    "drizzle-kit": "^0.31.10",
     "graphql": "^16.13.2",
     "graphql-request": "^7.4.0",
     "orval": "^8.7.0",
+    "oxlint": "^1.61.0",
+    "oxlint-tsgolint": "^0.21.1",
     "react": "^19.2.5",
     "react-dom": "^19.2.5",
     "react-router": "^7.14.0",

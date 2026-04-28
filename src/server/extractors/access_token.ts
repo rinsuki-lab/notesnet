@@ -2,7 +2,7 @@ import { createMiddleware } from "hono/factory";
 import { db } from "../db/index.ts";
 import { createHash } from "node:crypto";
 import { eq, or, type TableFilter } from "drizzle-orm";
-import { personasTable, scopePermissionsKeys, scopePermissionsObject, scopePersonasTable, scopesTable } from "../db/schema.ts";
+import { personasTable, scopePermissionsObject, scopePersonasTable, scopesTable } from "../db/schema.ts";
 
 export type AuthorizedResult = {
     accessTokenId: string,

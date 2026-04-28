@@ -1,5 +1,5 @@
 import { sql } from "drizzle-orm";
-import { boolean, check, customType, pgTable, text, timestamp, uuid, bytea, jsonb } from "drizzle-orm/pg-core";
+import { boolean, check, pgTable, text, timestamp, uuid, bytea, jsonb } from "drizzle-orm/pg-core";
 
 export const accountsTable = pgTable("accounts", {
     id: uuid().primaryKey(),

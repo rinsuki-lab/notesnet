@@ -49,7 +49,7 @@ export function ComposePost() {
 
     const submit = useCallback(() => {
         if (!canSubmit) return
-        createNewNote({
+        void createNewNote({
             variables: {
                 input: {
                     content: { text },

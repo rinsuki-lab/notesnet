@@ -3,7 +3,6 @@ import { db } from "../../../../../db/index.ts";
 import { makeNotesWhereQueryObjectFromAuthorizedResult } from "../../../../../extractors/access_token.ts";
 import { builder } from "../builder.ts";
 import { Note } from "../types/note.ts";
-import { noteRevisionsTable, notesTable } from "../../../../../db/schema.ts";
 
 builder.queryField("recentNotes", t => t.drizzleField({
     type: [Note],

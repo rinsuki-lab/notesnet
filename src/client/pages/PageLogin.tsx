@@ -1,5 +1,4 @@
 import { useCreateSession } from "../api/internal"
-import { queryClient } from "../api/query-client"
 
 export function PageLogin() {
     const login = useCreateSession({

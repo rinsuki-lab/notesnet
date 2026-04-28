@@ -23,6 +23,7 @@ CREATE TABLE personas (
     account_id UUID NOT NULL REFERENCES accounts(id) ON DELETE CASCADE,
     name TEXT,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    UNIQUE (account_id, id), -- アクセストークンの外部キー用
     CHECK (name IS NOT NULL OR (name IS NULL AND id = account_id)) -- デフォルトペルソナはアカウントIDと同じID (確定ではないので参照時はこれを前提としてはならない、デフォルトペルソナを探したい時は (account_id = ? AND name IS NULL) で探すべき)
 );
 COMMENT ON COLUMN personas.name IS 'ペルソナの名前。accounts.nameとドットで結合し、persona_name.account_name のようになる。NULLの場合はデフォルトペルソナで、accounts.name のみが表示される。';
@@ -36,7 +37,8 @@ CREATE TABLE access_tokens (
     description TEXT NOT NULL,
     is_super_token BOOLEAN NOT NULL DEFAULT FALSE,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    revoked_at TIMESTAMPTZ
+    revoked_at TIMESTAMPTZ,
+    FOREIGN KEY (account_id, persona_id) REFERENCES personas(account_id, id)
 );
 COMMENT ON COLUMN access_tokens.is_super_token IS 'Webインターフェース用のトークン (/api/internal/ が使える) かどうか';
 

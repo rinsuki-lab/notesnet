@@ -7,5 +7,6 @@ const router = new Hono()
 
 router.route("/internal", internalRouter)
 router.route("/v1", v1Router)
+router.all("*", c => c.text("Not Found", 404))
 
 export default router

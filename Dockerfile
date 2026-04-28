@@ -1,16 +1,22 @@
-FROM node:24-slim AS frontend
+FROM node:24-slim AS node-base
 WORKDIR /notesnet
 
 RUN corepack enable pnpm
 COPY package.json pnpm-lock.yaml ./
 RUN pnpm install --frozen-lockfile
+
+FROM node-base AS frontend
 RUN --mount=type=bind,source=src/client,target=src/client \
     --mount=type=bind,source=index.html,target=index.html \
     --mount=type=bind,source=vite.config.ts,target=vite.config.ts \
+    --mount=type=bind,source=tsconfig.json,target=tsconfig.json \
     --mount=type=bind,source=assets-compressor.mts,target=assets-compressor.mts \
     pnpm build
 
-FROM rust:1.93-trixie AS backend
+FROM node-base AS backend-node
+RUN pnpm install --frozen-lockfile --prod
+
+FROM rust:1.93-trixie AS backend-rust
 WORKDIR /notesnet
 
 COPY Cargo.toml Cargo.lock ./
@@ -20,10 +26,13 @@ RUN --mount=type=bind,source=.sqlx,target=.sqlx \
     --mount=type=bind,source=migrations,target=migrations \
     touch src/main.rs && cargo build --release
 
-FROM gcr.io/distroless/cc-debian13:nonroot
+FROM gcr.io/distroless/nodejs24-debian13:nonroot
 WORKDIR /notesnet
+COPY ./package.json ./
+COPY --from=backend-rust /notesnet/target/release/notesnet ./notesnet
 COPY --from=frontend /notesnet/dist ./dist
-COPY --from=backend /notesnet/target/release/notesnet ./notesnet
+COPY --from=backend-node /notesnet/node_modules ./node_modules
+COPY ./src/server ./src/server
 
 EXPOSE 3000
-CMD ["./notesnet"]
+CMD ["./src/server/index.ts"]

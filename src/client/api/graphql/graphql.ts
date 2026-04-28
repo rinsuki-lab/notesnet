@@ -70,7 +70,7 @@ export type NoteRevision = {
 export type Query = {
   __typename?: 'Query';
   note?: Maybe<Note>;
-  recentNotes?: Maybe<Array<Note>>;
+  recentNotes: Array<Note>;
   viewer: Viewer;
 };
 
@@ -120,7 +120,7 @@ export type CreateNewNoteMutation = { __typename?: 'Mutation', createNewNote: { 
 export type RecentNotesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type RecentNotesQuery = { __typename?: 'Query', recentNotes?: Array<{ __typename?: 'Note', id: string, latestRevision?: { __typename?: 'NoteRevision', id: string, summary?: string | null, writtenAt: any, contentType: string, content: any, attributes: any } | null }> | null };
+export type RecentNotesQuery = { __typename?: 'Query', recentNotes: Array<{ __typename?: 'Note', id: string, latestRevision?: { __typename?: 'NoteRevision', id: string, summary?: string | null, writtenAt: any, contentType: string, content: any, attributes: any } | null }> };
 
 export type GetNoteQueryVariables = Exact<{
   id: Scalars['ID']['input'];

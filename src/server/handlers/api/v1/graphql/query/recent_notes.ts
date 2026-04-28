@@ -24,5 +24,6 @@ builder.queryField("recentNotes", t => t.drizzleField({
             // ULTRA HACK, remove after https://github.com/drizzle-team/drizzle-orm/issues/5047 implemented
             orderBy: t => sql`("latestRevision"."r"->>'writtenAt')::timestamptz DESC, ("latestRevision"."r"->>'insertedAt')::timestamptz DESC, ("latestRevision"."r"->>'id')::uuid DESC`,
         })
-    }
+    },
+    nullable: false,
 }))

@@ -10,6 +10,11 @@ export const Scope = builder.drizzleObject("scopesTable", {
         name: t.exposeString("name", { nullable: false }),
         permissions: t.field({
             type: ScopePermission,
+            select: {
+                columns: {
+                    ownerAccountId: true,
+                },
+            },
             async resolve(parent, args, ctx) {
                 // オーナーアカウントのデフォルトペルソナは全権を持つ
                 if (parent.ownerAccountId === ctx.authorized.accountId && ctx.authorized.isDefaultPersona) {

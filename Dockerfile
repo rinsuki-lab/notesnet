@@ -22,15 +22,14 @@ WORKDIR /notesnet
 COPY Cargo.toml Cargo.lock ./
 RUN mkdir src && echo 'fn main() -> std::process::ExitCode {println!("build failed :("); return std::process::ExitCode::FAILURE}' > src/main.rs && cargo build --release && rm src/main.rs
 COPY --exclude=src/client src ./src
-RUN --mount=type=bind,source=.sqlx,target=.sqlx \
-    --mount=type=bind,source=migrations,target=migrations \
+RUN --mount=type=bind,source=migrations,target=migrations \
     touch src/main.rs && cargo build --release
 
 FROM gcr.io/distroless/nodejs24-debian13:nonroot
 WORKDIR /notesnet
-COPY ./package.json ./
 COPY --from=backend-rust /notesnet/target/release/notesnet ./notesnet
 COPY --from=frontend /notesnet/dist ./dist
+COPY ./package.json ./
 COPY --from=backend-node /notesnet/node_modules ./node_modules
 COPY ./src/server ./src/server
 

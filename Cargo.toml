@@ -4,21 +4,7 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-argon2 = "0.5.3"
-async-graphql = { version = "7.2.1", default-features = false, features = ["tracing", "uuid", "chrono", "dataloader"] }
-async-graphql-axum = { version = "7.2.1", features = ["tracing"] }
-axum = "0.8.9"
-chrono = { version = "0.4.44", features = ["serde"] }
-hex = "0.4.3"
-itertools = "0.14.0"
-serde = "1.0.228"
-serde_json = "1.0.149"
-sha2 = "0.11.0"
 sqlx = { version = "0.8.6", features = ["chrono", "migrate", "postgres", "runtime-tokio", "uuid"] }
 tokio = { version = "1.52.0", features = ["macros", "rt-multi-thread"] }
-tower = "0.5.3"
-tower-http = { version = "0.6.8", features = ["fs", "set-header", "trace"] }
 tracing = "0.1.44"
 tracing-subscriber = { version = "0.3.23", features = ["env-filter", "json"] }
-utoipa = { version = "5.4.0", features = ["axum_extras", "chrono", "uuid"] }
-uuid = { version = "1.23.1", features = ["serde", "v4"] }

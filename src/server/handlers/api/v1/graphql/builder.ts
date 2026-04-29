@@ -1,9 +1,9 @@
 import SchemaBuilder from "@pothos/core"
 import DrizzlePlugin from "@pothos/plugin-drizzle"
 import SimpleObjectsPlugin from "@pothos/plugin-simple-objects"
+import ValidationPlugin from "@pothos/plugin-validation"
 import { getTableConfig } from "drizzle-orm/pg-core"
 import { JSONResolver, DateTimeISOResolver } from "graphql-scalars"
-import ValidationPlugin from "@pothos/plugin-validation"
 
 import { db } from "../../../../db/index.ts"
 import { relations } from "../../../../db/relations.ts"

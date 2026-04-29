@@ -1,4 +1,5 @@
 import { sql } from "drizzle-orm"
+
 import { makeNotesWhereQueryObjectFromAuthorizedResult } from "../../../../../extractors/access_token.ts"
 import { builder } from "../builder.ts"
 import { NoteRevision } from "./note_revision.ts"

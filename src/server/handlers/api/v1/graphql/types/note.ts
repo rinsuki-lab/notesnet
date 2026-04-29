@@ -1,3 +1,4 @@
+import { sql } from "drizzle-orm"
 import { makeNotesWhereQueryObjectFromAuthorizedResult } from "../../../../../extractors/access_token.ts"
 import { builder } from "../builder.ts"
 import { NoteRevision } from "./note_revision.ts"
@@ -68,6 +69,7 @@ builder.drizzleObjectFields(Note, t => ({
                     shouldListedAsParent: true,
                     parentNote: makeNotesWhereQueryObjectFromAuthorizedResult(ctx.authorized),
                 },
+                orderBy: t => sql`${t.orderChild} ASC NULLS LAST`,
             }
         },
         nullable: false,

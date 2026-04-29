@@ -1,6 +1,6 @@
 {
   "$schema": "./node_modules/oxfmt/configuration_schema.json",
-  "ignorePatterns": ["src/client/api/**", "dist/**", "node_modules/**", "openapi.json"],
+  "ignorePatterns": ["src/client/api/**", "dist/**", "node_modules/**", "openapi.json", "schema.graphql"],
   "tabWidth": 4,
   "semi": false,
   "printWidth": 120,
@@ -9,7 +9,7 @@
   "sortImports": true,
   "overrides": [
     {
-      "files": ["*.yml", "*.md", "*.json", "*.graphql"],
+      "files": ["*.yml", "*.md", "*.json"],
       "options": {
         "tabWidth": 2
       }

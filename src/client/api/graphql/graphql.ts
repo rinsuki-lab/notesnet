@@ -24,11 +24,19 @@ export type CreateNewNoteInput = {
   attributes: Scalars['JSON']['input'];
   content: Scalars['JSON']['input'];
   contentType: Scalars['String']['input'];
+  parents?: InputMaybe<Array<CreateNewNoteParentInput>>;
   scopeId: Scalars['ID']['input'];
   startedAt?: InputMaybe<Scalars['DateTime']['input']>;
   summary?: InputMaybe<Scalars['String']['input']>;
   textForSearch: Scalars['String']['input'];
   writtenAt?: InputMaybe<Scalars['DateTime']['input']>;
+};
+
+export type CreateNewNoteParentInput = {
+  noteId: Scalars['ID']['input'];
+  order?: InputMaybe<Scalars['Int']['input']>;
+  shouldListedAsChild?: Scalars['Boolean']['input'];
+  shouldListedAsParent?: Scalars['Boolean']['input'];
 };
 
 export type Mutation = {

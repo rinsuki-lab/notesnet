@@ -2,11 +2,19 @@ input CreateNewNoteInput {
   attributes: JSON!
   content: JSON!
   contentType: String!
+  parents: [CreateNewNoteParentInput!]
   scopeId: ID!
   startedAt: DateTime
   summary: String
   textForSearch: String!
   writtenAt: DateTime
+}
+
+input CreateNewNoteParentInput {
+  noteId: ID!
+  order: Int
+  shouldListedAsChild: Boolean! = true
+  shouldListedAsParent: Boolean! = true
 }
 
 """

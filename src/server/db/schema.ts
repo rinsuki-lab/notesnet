@@ -1,5 +1,5 @@
 import { sql } from "drizzle-orm"
-import { boolean, check, pgTable, text, timestamp, uuid, bytea, jsonb } from "drizzle-orm/pg-core"
+import { boolean, check, pgTable, text, timestamp, uuid, bytea, jsonb, integer } from "drizzle-orm/pg-core"
 
 export const accountsTable = pgTable("accounts", {
     id: uuid().primaryKey(),
@@ -104,4 +104,17 @@ export const noteRevisionsTable = pgTable("note_revisions", {
     startedAt: timestamp({ withTimezone: true }),
     writtenAt: timestamp({ withTimezone: true }).notNull().defaultNow(),
     insertedAt: timestamp({ withTimezone: true }).notNull().defaultNow(),
+})
+
+export const noteRelationshipsTable = pgTable("note_relationships", {
+    id: uuid().primaryKey(),
+    parentNoteId: uuid()
+        .notNull()
+        .references(() => notesTable.id),
+    childNoteId: uuid()
+        .notNull()
+        .references(() => notesTable.id),
+    shouldListedAsChild: boolean().notNull().default(true),
+    shouldListedAsParent: boolean().notNull().default(true),
+    orderChild: integer(),
 })

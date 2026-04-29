@@ -27,11 +27,17 @@ type Note {
   external: NoteExternal
   id: ID!
   latestRevision: NoteRevision
+  parents: [NoteRelation!]!
 }
 
 type NoteExternal {
   id: String!
   service: String!
+}
+
+type NoteRelation {
+  child: Note
+  parent: Note
 }
 
 type NoteRevision {

@@ -1,3 +1,4 @@
+import { makeNotesWhereQueryObjectFromAuthorizedResult } from "../../../../../extractors/access_token.ts"
 import { builder } from "../builder.ts"
 import { NoteRevision } from "./note_revision.ts"
 
@@ -35,3 +36,40 @@ export const Note = builder.drizzleObject("notesTable", {
         }),
     }),
 })
+
+export const NoteRelation = builder.drizzleObject("noteRelationshipsTable", {
+    variant: "NoteRelation",
+    fields: t => ({
+        parent: t.relation("parentNote", {
+            type: Note,
+            query(args, ctx) {
+                return {
+                    where: makeNotesWhereQueryObjectFromAuthorizedResult(ctx.authorized),
+                }
+            },
+        }),
+        child: t.relation("childNote", {
+            type: Note,
+            query(args, ctx) {
+                return {
+                    where: makeNotesWhereQueryObjectFromAuthorizedResult(ctx.authorized),
+                }
+            },
+        }),
+    }),
+})
+
+builder.drizzleObjectFields(Note, t => ({
+    parents: t.relation("parentRelationships", {
+        type: NoteRelation,
+        query(args, ctx) {
+            return {
+                where: {
+                    shouldListedAsParent: true,
+                    parentNote: makeNotesWhereQueryObjectFromAuthorizedResult(ctx.authorized),
+                },
+            }
+        },
+        nullable: false,
+    }),
+}))

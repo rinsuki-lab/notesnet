@@ -25,10 +25,25 @@ export const relations = defineRelations(schema, r => ({
                 nextRevisionId: { isNull: true },
             },
         }),
+        // relationships
+        parentRelationships: r.many.noteRelationshipsTable({
+            from: r.notesTable.id,
+            to: r.noteRelationshipsTable.childNoteId,
+        }),
     },
     noteRevisionsTable: {
         note: r.one.notesTable({
             from: r.noteRevisionsTable.noteId,
+            to: r.notesTable.id,
+        }),
+    },
+    noteRelationshipsTable: {
+        parentNote: r.one.notesTable({
+            from: r.noteRelationshipsTable.parentNoteId,
+            to: r.notesTable.id,
+        }),
+        childNote: r.one.notesTable({
+            from: r.noteRelationshipsTable.childNoteId,
             to: r.notesTable.id,
         }),
     },

@@ -36,6 +36,7 @@ type Note {
   id: ID!
   latestRevision: NoteRevision
   parents: [NoteRelation!]!
+  scope: Scope
 }
 
 type NoteExternal {

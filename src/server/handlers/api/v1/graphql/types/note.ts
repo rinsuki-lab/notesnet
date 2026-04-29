@@ -3,6 +3,7 @@ import { sql } from "drizzle-orm"
 import { makeNotesWhereQueryObjectFromAuthorizedResult } from "../../../../../extractors/access_token.ts"
 import { builder } from "../builder.ts"
 import { NoteRevision } from "./note_revision.ts"
+import { Scope } from "./scope.ts"
 
 export const NoteExternal = builder.simpleObject("NoteExternal", {
     fields: t => ({
@@ -17,6 +18,9 @@ export const Note = builder.drizzleObject("notesTable", {
         id: t.exposeID("id", { nullable: false }),
         latestRevision: t.relation("latestRevision", {
             type: NoteRevision,
+        }),
+        scope: t.relation("scope", {
+            type: Scope,
         }),
         external: t.field({
             type: NoteExternal,

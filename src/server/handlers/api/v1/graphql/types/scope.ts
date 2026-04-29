@@ -12,6 +12,7 @@ export const Scope = builder.drizzleObject("scopesTable", {
             type: ScopePermission,
             select: {
                 columns: {
+                    id: true,
                     ownerAccountId: true,
                 },
             },

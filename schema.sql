@@ -61,6 +61,7 @@ CREATE TABLE scope_personas (
 
     UNIQUE(scope_id, persona_id)
 );
+COMMENT ON TABLE scope_personas IS 'この行がある場合は少なくとも最新リビジョンを読む権限が付与される';
 COMMENT ON COLUMN scope_personas.can_read_note_revisions IS 'ノートの過去リビジョンを読むことができるか (行が存在する時点で最新リビジョンは読める)';
 COMMENT ON COLUMN scope_personas.can_modify_notes IS 'ノートの新リビジョンを作成できるか';
 COMMENT ON COLUMN scope_personas.can_add_their_notes_to_child IS 'persona_id のアカウントが作成したノートを「子」としてスコープが付いたノートに追加できるか';

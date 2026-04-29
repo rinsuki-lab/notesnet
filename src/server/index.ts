@@ -18,7 +18,7 @@ if (process.argv.includes("--dump-schema-and-exit")) {
     process.exit(0)
 }
 
-serve(
+const server = serve(
     {
         fetch: app.fetch,
     },
@@ -26,3 +26,11 @@ serve(
         console.log(`Listening on http://${info.address}:${info.port}`)
     }
 )
+
+function gracefulShutdown() {
+    console.log("Shutting down gracefully...")
+    server.close()
+}
+
+process.on("SIGTERM", gracefulShutdown)
+process.on("SIGINT", gracefulShutdown)

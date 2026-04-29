@@ -3,6 +3,7 @@ import DrizzlePlugin from "@pothos/plugin-drizzle"
 import SimpleObjectsPlugin from "@pothos/plugin-simple-objects"
 import { getTableConfig } from "drizzle-orm/pg-core"
 import { JSONResolver, DateTimeISOResolver } from "graphql-scalars"
+import ValidationPlugin from "@pothos/plugin-validation"
 
 import { db } from "../../../../db/index.ts"
 import { relations } from "../../../../db/relations.ts"
@@ -26,7 +27,7 @@ export const builder = new SchemaBuilder<{
     Context: OurContext
     DrizzleRelations: typeof relations
 }>({
-    plugins: [DrizzlePlugin, SimpleObjectsPlugin],
+    plugins: [DrizzlePlugin, SimpleObjectsPlugin, ValidationPlugin],
     drizzle: {
         client: db,
         getTableConfig,

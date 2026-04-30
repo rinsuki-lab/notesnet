@@ -3,11 +3,18 @@ import { Link } from "react-router"
 
 import { graphql } from "../api/graphql"
 import { NoteContentRenderer } from "../components/NoteContentRenderer"
+import { SimpleNoteLink } from "../components/SimpleNoteLink"
+import { ReplyButton } from "../contexts/ReplyContext"
 
 const queryRecentNotes = graphql(`
     query RecentNotes {
         recentNotes {
             id
+            scope {
+                permissions {
+                    canAddTheirNotesToChild
+                }
+            }
             latestRevision {
                 id
                 summary
@@ -51,14 +58,16 @@ export function PageLatestPosts() {
                         <hr />
                         {parents.map((parent, i) => (
                             <div key={parent.id}>
-                                {i ? "├" : "┌"}親:{" "}
-                                <Link to={`/notes/${parent.id}`}>
-                                    <strong>{parent.latestRevision?.summary}</strong>
-                                    {parent.latestRevision?.textForSearch}
-                                </Link>
+                                {i ? "├" : "┌"}親: <ReplyButton id={parent.id} />
+                                <SimpleNoteLink
+                                    id={parent.id}
+                                    summary={parent.latestRevision?.summary || ""}
+                                    textForSearch={parent.latestRevision?.textForSearch || ""}
+                                />
                             </div>
                         ))}
                         <p>
+                            {item.scope?.permissions?.canAddTheirNotesToChild ? <ReplyButton id={item.id} /> : null}
                             <Link to={`/notes/${item.id}`}>{rev.writtenAt}</Link>・{rev.contentType}
                         </p>
                         <p>{rev.summary}</p>

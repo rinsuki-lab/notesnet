@@ -3,6 +3,7 @@ import { useParams } from "react-router"
 
 import { graphql } from "../api/graphql/index.ts"
 import { NoteContentRenderer } from "../components/NoteContentRenderer.tsx"
+import { ReplyButton } from "../contexts/ReplyContext.tsx"
 
 const queryNote = graphql(`
     query GetNote($id: ID!) {
@@ -37,7 +38,10 @@ export function PageNoteDetail() {
         revision && (
             <div>
                 <h2>{revision.summary}</h2>
-                <p>{revision.writtenAt}</p>
+                <p>
+                    <ReplyButton id={data.note.id} />
+                    {revision.writtenAt}
+                </p>
                 <NoteContentRenderer note={revision} />
             </div>
         )

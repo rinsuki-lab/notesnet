@@ -4,9 +4,12 @@ import { Route, Routes } from "react-router"
 
 import { graphql } from "./api/graphql"
 import { ComposePost } from "./components/ComposePost.tsx"
+import { ReplyContextProvider } from "./contexts/ReplyContext.tsx"
 import { PageLatestPosts } from "./pages/PageLatestPosts"
 import { PageLogin } from "./pages/PageLogin"
 import { PageNoteDetail } from "./pages/PageNoteDetail.tsx"
+
+import "./App.css"
 
 const queryMy = graphql(`
     query My {
@@ -37,12 +40,16 @@ export function App() {
     }
 
     return (
-        <div>
-            <Routes>
-                <Route path="/" element={<PageLatestPosts />} />
-                <Route path="/notes/:noteId" element={<PageNoteDetail />} />
-            </Routes>
-            <ComposePost />
+        <div id="app-container">
+            <ReplyContextProvider>
+                <div id="app-content">
+                    <Routes>
+                        <Route path="/" element={<PageLatestPosts />} />
+                        <Route path="/notes/:noteId" element={<PageNoteDetail />} />
+                    </Routes>
+                </div>
+                <ComposePost />
+            </ReplyContextProvider>
         </div>
     )
 }

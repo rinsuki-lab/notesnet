@@ -1,9 +1,11 @@
 import { useQuery, useMutation, useApolloClient } from "@apollo/client/react"
-import { useCallback, useState } from "react"
+import { useCallback, useContext, useState } from "react"
 
 import { graphql } from "../api/graphql/index.ts"
 
 import "./ComposePost.css"
+import { ReplyContext } from "../contexts/ReplyContext.tsx"
+import { SimpleNoteLinkFromId } from "./SimpleNoteLink.tsx"
 
 const queryMyScopes = graphql(`
     query MyScopes {
@@ -28,6 +30,7 @@ const mutationCreateNewNote = graphql(`
 `)
 
 export function ComposePost() {
+    const replyContext = useContext(ReplyContext)
     const [selectedScopeId, setSelectedScopeId] = useState("")
     const [text, setText] = useState("")
 
@@ -37,6 +40,7 @@ export function ComposePost() {
     const [createNewNote, createNewNoteResult] = useMutation(mutationCreateNewNote, {
         onCompleted() {
             setText("")
+            replyContext?.[1]([])
             apolloClient.cache.evict({ fieldName: "recentNotes" })
         },
     })
@@ -61,13 +65,36 @@ export function ComposePost() {
                     startedAt: null,
                     writtenAt: null,
                     summary: null,
+                    parents: replyContext
+                        ? replyContext[0].map(noteId => {
+                              return {
+                                  noteId,
+                              }
+                          })
+                        : [],
                 },
             },
         })
-    }, [text, effectiveScopeId, canSubmit, createNewNote])
+    }, [text, effectiveScopeId, canSubmit, createNewNote, replyContext?.[0].join(",")])
 
     return (
         <div className="compose-post">
+            {replyContext?.[0].length ? (
+                <div className="parents-list">
+                    {replyContext[0].map(id => (
+                        <div key={id}>
+                            <button
+                                onClick={() => {
+                                    replyContext[1](ids => ids.filter(i => i !== id))
+                                }}
+                            >
+                                ×
+                            </button>
+                            <SimpleNoteLinkFromId id={id} />
+                        </div>
+                    ))}
+                </div>
+            ) : null}
             {scopes.data != null ? (
                 <select
                     className="scope-select"

@@ -1,0 +1,15 @@
+body {
+    margin: 0;
+}
+
+#app-container {
+    display: flex;
+    min-height: 100vh;
+    min-height: 100svh;
+    flex-direction: column;
+}
+
+#app-content {
+    flex: 1;
+    padding: 8px;
+}

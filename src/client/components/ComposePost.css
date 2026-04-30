@@ -2,14 +2,21 @@
     position: sticky;
     bottom: 0;
     background: rgba(255, 255, 255, 0.8);
-    padding: 8px;
+    padding: 16px 8px;
 
     display: grid;
     grid-template-columns: 1fr auto;
     gap: 8px;
     grid-template-areas:
+        "parents send"
         "scope send"
         "text send";
+
+    & > .parents-list {
+        grid-area: parents;
+        display: flex;
+        gap: 0.5em;
+    }
 
     & > .scope-select {
         grid-area: scope;

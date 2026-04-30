@@ -79,4 +79,30 @@ builder.drizzleObjectFields(Note, t => ({
         },
         nullable: false,
     }),
+    childs: t.relation("childRelationships", {
+        type: NoteRelation,
+        query(args, ctx) {
+            return {
+                where: {
+                    shouldListedAsChild: true,
+                    childNote: makeNotesWhereQueryObjectFromAuthorizedResult(ctx.authorized),
+                },
+                with: {
+                    childNote: {
+                        with: {
+                            latestRevision: {
+                                columns: {
+                                    writtenAt: true,
+                                },
+                            }
+                        }
+                    },
+                },
+                // ULTRA HACK, remove after https://github.com/drizzle-team/drizzle-orm/issues/5047 implemented
+                orderBy: t =>
+                    sql`${t.orderChild} ASC NULLS LAST, ("childNote"."r"->'latestRevision'->>'writtenAt') ASC NULLS LAST, ${t.childNoteId} ASC`,
+            }
+        },
+        nullable: false,
+    }),
 }))

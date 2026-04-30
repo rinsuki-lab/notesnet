@@ -1,4 +1,5 @@
 import { useQuery } from "@apollo/client/react"
+import { useEffect, useRef } from "react"
 import { Link } from "react-router"
 
 import { graphql } from "../api/graphql"
@@ -38,6 +39,55 @@ const queryRecentNotes = graphql(`
 
 export function PageLatestPosts() {
     const { data, loading, error } = useQuery(queryRecentNotes)
+    const wasAtBottomRef = useRef(false)
+
+    // データロード時に一番下にスクロール
+    useEffect(() => {
+        if (data != null) {
+            window.scrollTo(0, document.documentElement.scrollHeight)
+        }
+    }, [data != null])
+
+    // スクロール位置を追跡し、リサイズ時に一番下を維持
+    useEffect(() => {
+        let falseTimer: ReturnType<typeof setTimeout> | null = null
+
+        const checkAtBottom = () => {
+            const distanceFromBottom =
+                document.documentElement.scrollHeight - window.scrollY - window.innerHeight
+            if (distanceFromBottom <= 10) {
+                if (falseTimer) {
+                    clearTimeout(falseTimer)
+                    falseTimer = null
+                }
+                wasAtBottomRef.current = true
+            } else {
+                // リサイズ中の一時的なスクロールズレで誤判定しないよう遅延
+                if (falseTimer) clearTimeout(falseTimer)
+                falseTimer = setTimeout(() => {
+                    wasAtBottomRef.current = false
+                }, 150)
+            }
+        }
+
+        const handleResize = () => {
+            if (wasAtBottomRef.current) {
+                requestAnimationFrame(() => {
+                    window.scrollTo(0, document.documentElement.scrollHeight)
+                })
+            }
+        }
+
+        window.addEventListener("scroll", checkAtBottom, { passive: true })
+        window.addEventListener("resize", handleResize)
+        checkAtBottom()
+
+        return () => {
+            window.removeEventListener("scroll", checkAtBottom)
+            window.removeEventListener("resize", handleResize)
+            if (falseTimer) clearTimeout(falseTimer)
+        }
+    }, [])
 
     if (loading && !data) return <div>Loading...</div>
     if (error || !data)
@@ -49,7 +99,7 @@ export function PageLatestPosts() {
 
     return (
         <div>
-            {data.recentNotes.map(item => {
+            {data.recentNotes.toReversed().map(item => {
                 const parents = item.parents.map(p => p.parent).filter(p => p != null)
                 const rev = item.latestRevision
                 if (!rev) return null

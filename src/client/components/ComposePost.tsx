@@ -79,22 +79,26 @@ export function ComposePost() {
 
     return (
         <div className="compose-post">
-            {replyContext?.[0].length ? (
-                <div className="parents-list">
-                    {replyContext[0].map(id => (
-                        <div key={id}>
-                            <button
-                                onClick={() => {
-                                    replyContext[1](ids => ids.filter(i => i !== id))
-                                }}
-                            >
-                                ×
-                            </button>
-                            <SimpleNoteLinkFromId id={id} />
-                        </div>
-                    ))}
-                </div>
-            ) : null}
+            <div className="parents-list">
+                {replyContext?.[0].length ? (
+                    <>
+                        {replyContext[0].map(id => (
+                            <div key={id}>
+                                <button
+                                    onClick={() => {
+                                        replyContext[1](ids => ids.filter(i => i !== id))
+                                    }}
+                                >
+                                    ×
+                                </button>
+                                <SimpleNoteLinkFromId id={id} />
+                            </div>
+                        ))}
+                    </>
+                ) : (
+                    "現在何も選択していません"
+                )}
+            </div>
             {scopes.data != null ? (
                 <select
                     className="scope-select"

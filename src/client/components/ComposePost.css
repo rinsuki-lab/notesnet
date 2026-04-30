@@ -2,7 +2,8 @@
     position: sticky;
     bottom: 0;
     background: rgba(255, 255, 255, 0.8);
-    padding: 16px 8px;
+    padding: 8px;
+    border-top: 1px solid #ccc;
 
     display: grid;
     grid-template-columns: 1fr auto;

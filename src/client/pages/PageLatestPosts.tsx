@@ -1,9 +1,8 @@
 import { useQuery } from "@apollo/client/react"
 import { useEffect, useRef } from "react"
-import { Link } from "react-router"
 
 import { graphql } from "../api/graphql"
-import { NoteContentRenderer } from "../components/NoteContentRenderer"
+import { Note } from "../components/Note"
 import { SimpleNoteLink } from "../components/SimpleNoteLink"
 import { ReplyButton } from "../contexts/ReplyContext"
 
@@ -115,12 +114,7 @@ export function PageLatestPosts() {
                                 />
                             </div>
                         ))}
-                        <p>
-                            {item.scope?.permissions?.canAddTheirNotesToChild ? <ReplyButton id={item.id} /> : null}
-                            <Link to={`/notes/${item.id}`}>{rev.writtenAt}</Link>・{rev.contentType}
-                        </p>
-                        <p>{rev.summary}</p>
-                        <NoteContentRenderer note={rev} />
+                        <Note note={item} revision={rev} />
                     </div>
                 )
             })}

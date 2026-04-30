@@ -2,8 +2,7 @@ import { useQuery } from "@apollo/client/react"
 import { useParams } from "react-router"
 
 import { graphql } from "../api/graphql/index.ts"
-import { NoteContentRenderer } from "../components/NoteContentRenderer.tsx"
-import { ReplyButton } from "../contexts/ReplyContext.tsx"
+import { Note } from "../components/Note.tsx"
 
 const queryNote = graphql(`
     query GetNote($id: ID!) {
@@ -16,6 +15,11 @@ const queryNote = graphql(`
                 contentType
                 content
                 attributes
+            }
+            scope {
+                permissions {
+                    canAddTheirNotesToChild
+                }
             }
         }
     }
@@ -35,15 +39,8 @@ export function PageNoteDetail() {
 
     const revision = data.note.latestRevision
     return (
-        revision && (
-            <div>
-                <h2>{revision.summary}</h2>
-                <p>
-                    <ReplyButton id={data.note.id} />
-                    {revision.writtenAt}
-                </p>
-                <NoteContentRenderer note={revision} />
-            </div>
-        )
+        revision && <div>
+            <Note note={data.note} revision={revision} />
+        </div>
     )
 }

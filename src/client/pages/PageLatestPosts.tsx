@@ -53,8 +53,7 @@ export function PageLatestPosts() {
         let falseTimer: ReturnType<typeof setTimeout> | null = null
 
         const checkAtBottom = () => {
-            const distanceFromBottom =
-                document.documentElement.scrollHeight - window.scrollY - window.innerHeight
+            const distanceFromBottom = document.documentElement.scrollHeight - window.scrollY - window.innerHeight
             if (distanceFromBottom <= 10) {
                 if (falseTimer) {
                     clearTimeout(falseTimer)

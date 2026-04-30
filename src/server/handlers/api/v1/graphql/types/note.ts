@@ -94,8 +94,8 @@ builder.drizzleObjectFields(Note, t => ({
                                 columns: {
                                     writtenAt: true,
                                 },
-                            }
-                        }
+                            },
+                        },
                     },
                 },
                 // ULTRA HACK, remove after https://github.com/drizzle-team/drizzle-orm/issues/5047 implemented

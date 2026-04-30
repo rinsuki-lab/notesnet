@@ -3,6 +3,8 @@ import { Link } from "react-router"
 import { ReplyButton } from "../contexts/ReplyContext"
 import { NoteContentRenderer } from "./NoteContentRenderer"
 
+import "./Note.css"
+
 export function Note(props: {
     note: {
         id: string
@@ -21,12 +23,12 @@ export function Note(props: {
     }
 }) {
     return (
-        <div>
-            <p>
+        <div className="note">
+            <div>
                 {props.note.scope?.permissions?.canAddTheirNotesToChild ? <ReplyButton id={props.note.id} /> : null}
                 <Link to={`/notes/${props.note.id}`}>{props.revision.writtenAt}</Link>・{props.revision.contentType}
-            </p>
-            <p>{props.revision.summary}</p>
+            </div>
+            <div>{props.revision.summary}</div>
             <NoteContentRenderer note={props.revision} />
         </div>
     )

@@ -103,7 +103,6 @@ export function PageLatestPosts() {
                 if (!rev) return null
                 return (
                     <div key={rev.id}>
-                        <hr />
                         {parents.map((parent, i) => (
                             <div key={parent.id}>
                                 {i ? "├" : "┌"}親: <ReplyButton id={parent.id} />

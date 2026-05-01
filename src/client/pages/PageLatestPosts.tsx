@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react"
 import { graphql } from "../api/graphql"
 import { Note } from "../components/Note"
 import { SimpleNoteLink } from "../components/SimpleNoteLink"
+import { TreeUl } from "../components/TreeUl"
 import { ReplyButton } from "../contexts/ReplyContext"
 
 const queryRecentNotes = graphql(`
@@ -103,16 +104,18 @@ export function PageLatestPosts() {
                 if (!rev) return null
                 return (
                     <div key={rev.id}>
-                        {parents.map((parent, i) => (
-                            <div key={parent.id}>
-                                {i ? "├" : "┌"}親: <ReplyButton id={parent.id} />
-                                <SimpleNoteLink
-                                    id={parent.id}
-                                    summary={parent.latestRevision?.summary || ""}
-                                    textForSearch={parent.latestRevision?.textForSearch || ""}
-                                />
-                            </div>
-                        ))}
+                        <TreeUl start="bottom" firstMargin={8} secondMargin={8} innerPadding={0}>
+                            {parents.map(parent => (
+                                <li key={parent.id}>
+                                    <ReplyButton id={parent.id} />
+                                    <SimpleNoteLink
+                                        id={parent.id}
+                                        summary={parent.latestRevision?.summary || ""}
+                                        textForSearch={parent.latestRevision?.textForSearch || ""}
+                                    />
+                                </li>
+                            ))}
+                        </TreeUl>
                         <Note note={item} revision={rev} />
                     </div>
                 )

@@ -1,0 +1,62 @@
+ul.tree {
+    padding-left: 2em;
+    margin: 0;
+
+    --tree-first-margin: 0px;
+    --tree-second-margin: 0px;
+    --tree-inner-padding: 0px;
+    --tree-color: #333;
+
+    & > li {
+        position: relative;
+        list-style: none;
+        &::before {
+            content: "";
+            position: absolute;
+            left: -1em;
+            width: 1em;
+            border-top: 1px solid var(--tree-color);
+            top: calc(0.5lh + var(--tree-inner-padding));
+        }
+        &::after {
+            content: "";
+            position: absolute;
+            left: -1em;
+            top: 0;
+            bottom: 0;
+            width: 1em;
+            border-left: 1px solid var(--tree-color);
+        }
+    }
+
+    &.tree-top-start {
+        & > li::after {
+            top: calc(-1 * var(--tree-second-margin));
+        }
+        & > li:first-child::after {
+            top: calc(-1 * var(--tree-first-margin));
+        }
+        & > li:last-child::after {
+            height: calc(0.5lh + var(--tree-inner-padding) + var(--tree-second-margin));
+            bottom: auto;
+        }
+        & > li:only-child::after {
+            height: calc(0.5lh + var(--tree-inner-padding) + var(--tree-first-margin));
+        }
+    }
+    &.tree-bottom-start {
+        & > li::after {
+            bottom: calc(-1 * var(--tree-second-margin));
+        }
+        & > li:first-child::after {
+            top: calc(0.5lh + var(--tree-inner-padding));
+        }
+        & > li:last-child::after {
+            bottom: calc(-1 * var(--tree-first-margin));
+        }
+    }
+
+    &:not(.tree-top-start):not(.tree-bottom-start) {
+        background: red; /* debug */
+    }
+}

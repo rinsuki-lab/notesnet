@@ -10,6 +10,7 @@ import { PageLogin } from "./pages/PageLogin"
 import { PageNoteDetail } from "./pages/PageNoteDetail.tsx"
 
 import "./App.css"
+import { PageTreeUlDebug } from "./pages/PageTreeUlDebug.tsx"
 
 const queryMy = graphql(`
     query My {
@@ -46,6 +47,7 @@ export function App() {
                     <Routes>
                         <Route path="/" element={<PageLatestPosts />} />
                         <Route path="/notes/:noteId" element={<PageNoteDetail />} />
+                        <Route path="/debug/tree-ul" element={<PageTreeUlDebug />} />
                     </Routes>
                 </div>
                 <ComposePost />

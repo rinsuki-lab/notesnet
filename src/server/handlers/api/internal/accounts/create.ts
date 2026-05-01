@@ -1,6 +1,7 @@
 import argon2 from "argon2"
 import { Hono } from "hono"
 import { describeRoute, validator } from "hono-openapi"
+import { v7 as uuidv7 } from "uuid"
 import * as v from "valibot"
 
 import { db } from "../../../../db/index.ts"
@@ -39,7 +40,7 @@ router.post(
                 const [account] = await tx
                     .insert(accountsTable)
                     .values({
-                        id: crypto.randomUUID(),
+                        id: uuidv7(),
                         name: body.username,
                         hashedPassword,
                     })

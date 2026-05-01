@@ -1,3 +1,4 @@
+import { v7 as uuidv7 } from "uuid"
 import * as v from "valibot"
 
 import { db } from "../../../../../db/index.ts"
@@ -44,20 +45,21 @@ builder.mutationField("createNewNote", t =>
                 const permission = await getPermission(args.input.scopeId, ctx.authorized, tx)
                 if (permission == null) throw new Error("Scope not found or no permission")
                 if (!permission.canModifyNotes) throw new Error("No permission to modify notes in this scope")
+                const noteIdMsecs = Date.now()
 
                 const [note] = await tx
                     .insert(notesTable)
                     .values({
                         authorPersonaId: ctx.authorized.personaId,
                         scopeId: args.input.scopeId,
-                        id: crypto.randomUUID(),
+                        id: uuidv7({ msecs: noteIdMsecs }),
                     })
                     .returning({ id: notesTable.id })
                 if (note == null) {
                     throw new Error("Failed to create a new note")
                 }
                 await tx.insert(noteRevisionsTable).values({
-                    id: crypto.randomUUID(),
+                    id: note.id,
                     authorPersonaId: ctx.authorized.personaId,
                     noteId: note.id,
                     contentType: args.input.contentType,
@@ -95,7 +97,7 @@ builder.mutationField("createNewNote", t =>
                         }
 
                         await tx.insert(noteRelationshipsTable).values({
-                            id: crypto.randomUUID(),
+                            id: uuidv7({ msecs: noteIdMsecs + 1 }),
                             parentNoteId: parent.noteId,
                             childNoteId: note.id,
                             shouldListedAsParent: parent.shouldListedAsParent,

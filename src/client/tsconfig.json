@@ -2,6 +2,10 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "noEmit": true,
-    "module": "preserve"
+    "module": "preserve",
+    "moduleResolution": "bundler",
+    "types": [],
+    "lib": ["DOM", "ESNext"],
+    "verbatimModuleSyntax": false
   }
 }

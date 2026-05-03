@@ -1,13 +1,10 @@
+import { spawn } from "node:child_process"
 import { writeFile } from "node:fs/promises"
 
 import { serve } from "@hono/node-server"
 import { generateSpecs } from "hono-openapi"
 
 import app from "./handlers/index.ts"
-import { execFile, spawn } from "node:child_process"
-import { promisify } from "node:util"
-
-const execFileAsync = promisify(execFile)
 
 if (process.argv.includes("--dump-schema-and-exit")) {
     const spec = await generateSpecs(app, {

@@ -1,4 +1,4 @@
-import { createHash } from "node:crypto"
+import { createHash, randomBytes } from "node:crypto"
 
 import { verify } from "argon2"
 import { Hono } from "hono"
@@ -60,9 +60,9 @@ router.post(
         }
 
         const tokenId = crypto.randomUUID()
-        const randomBytes = crypto.getRandomValues(new Uint8Array(64))
+        const salt = randomBytes(64)
 
-        const accessToken = `${tokenId}.${randomBytes.toHex()}`
+        const accessToken = `${tokenId}.${salt.toString("hex")}`
         const hashedToken = createHash("sha256").update(accessToken).digest()
 
         await db.insert(accessTokensTable).values({

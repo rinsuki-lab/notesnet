@@ -1,4 +1,4 @@
-import { useQuery, useMutation, useApolloClient } from "@apollo/client/react"
+import { useQuery, useMutation } from "@apollo/client/react"
 import { useCallback, useContext, useState } from "react"
 
 import { graphql } from "../api/graphql/index.ts"
@@ -35,13 +35,24 @@ export function ComposePost() {
     const [text, setText] = useState("")
 
     const scopes = useQuery(queryMyScopes)
-    const apolloClient = useApolloClient()
-
     const [createNewNote, createNewNoteResult] = useMutation(mutationCreateNewNote, {
+        update(cache, _result, { variables }) {
+            const parentNoteIds = variables?.input.parents?.map(parent => parent.noteId) ?? []
+
+            for (const parentNoteId of parentNoteIds) {
+                const cacheId = cache.identify({ __typename: "Note", id: parentNoteId })
+                if (cacheId == null) continue
+
+                cache.evict({
+                    id: cacheId,
+                    fieldName: "childs",
+                })
+            }
+            cache.evict({ fieldName: "recentNotes" })
+        },
         onCompleted() {
             setText("")
             replyContext?.[1]([])
-            apolloClient.cache.evict({ fieldName: "recentNotes" })
         },
     })
 

@@ -150,13 +150,14 @@ export function PageNoteDetail() {
     const id = useParams().noteId!
     const { data, loading, error } = useQuery(queryNote, { variables: { id } })
 
-    if (loading) return <div>Loading...</div>
-    if (error || !data?.note)
+    if (error || !data?.note) {
+        if (loading) return <div>Loading...</div>
         return (
             <div>
                 {":("} {error?.message}
             </div>
         )
+    }
 
     const revision = data.note.latestRevision
     return (

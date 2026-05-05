@@ -112,6 +112,7 @@ export function PageLatestPosts() {
                 for (const nextNote of reversedNotes.slice(i + 1)) {
                     if (nextNote.parents.length !== 1) break
                     if (nextNote.parents[0]?.parent?.id !== note.id) break
+                    if (nextNote.latestRevision == null) break
                     childNodes.push(nextNote)
                     shouldSkipIds.add(nextNote.id)
                 }
@@ -135,7 +136,7 @@ export function PageLatestPosts() {
                             <TreeUl start="top" firstMargin={8} secondMargin={8} innerPadding={0}>
                                 {childNodes.map(note => (
                                     <li key={note.id}>
-                                        <Note note={note} revision={rev} />
+                                        <Note note={note} revision={note.latestRevision!} />
                                     </li>
                                 ))}
                             </TreeUl>

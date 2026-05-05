@@ -96,12 +96,26 @@ export function PageLatestPosts() {
             </div>
         )
 
+    const shouldSkipIds = new Set()
+
+    const reversedNotes = data.recentNotes.toReversed()
+
     return (
         <div>
-            {data.recentNotes.toReversed().map(item => {
-                const parents = item.parents.map(p => p.parent).filter(p => p != null)
-                const rev = item.latestRevision
+            {reversedNotes.map((note, i) => {
+                if (shouldSkipIds.has(note.id)) return null
+                const parents = note.parents.map(p => p.parent).filter(p => p != null)
+                const rev = note.latestRevision
                 if (!rev) return null
+
+                const childNodes = []
+                for (const nextNote of reversedNotes.slice(i + 1)) {
+                    if (nextNote.parents.length !== 1) break
+                    if (nextNote.parents[0]?.parent?.id !== note.id) break
+                    childNodes.push(nextNote)
+                    shouldSkipIds.add(nextNote.id)
+                }
+
                 return (
                     <div key={rev.id}>
                         <TreeUl start="bottom" firstMargin={8} secondMargin={8} innerPadding={0}>
@@ -116,7 +130,16 @@ export function PageLatestPosts() {
                                 </li>
                             ))}
                         </TreeUl>
-                        <Note note={item} revision={rev} />
+                        <Note note={note} revision={rev} />
+                        {childNodes.length > 0 && (
+                            <TreeUl start="top" firstMargin={8} secondMargin={8} innerPadding={0}>
+                                {childNodes.map(note => (
+                                    <li key={note.id}>
+                                        <Note note={note} revision={rev} />
+                                    </li>
+                                ))}
+                            </TreeUl>
+                        )}
                     </div>
                 )
             })}

@@ -1,5 +1,6 @@
 ul.tree {
-    padding-left: 2em;
+    --tree-width: 2em;
+    padding-left: var(--tree-width);
     margin: 0;
 
     --tree-first-margin: 0px;
@@ -10,21 +11,19 @@ ul.tree {
     & > li {
         position: relative;
         list-style: none;
-        &::before {
+        &::before, &::after {
             content: "";
             position: absolute;
-            left: -1em;
-            width: 1em;
+            left: calc(-0.5 * var(--tree-width));
+            width: calc(var(--tree-width) / 2);
+        }
+        &::before {
             border-top: 1px solid var(--tree-color);
             top: calc(0.5lh + var(--tree-inner-padding));
         }
         &::after {
-            content: "";
-            position: absolute;
-            left: -1em;
             top: 0;
             bottom: 0;
-            width: 1em;
             border-left: 1px solid var(--tree-color);
         }
     }
@@ -58,5 +57,11 @@ ul.tree {
 
     &:not(.tree-top-start):not(.tree-bottom-start) {
         background: red; /* debug */
+    }
+}
+
+@media (max-width: 600px) {
+    ul.tree {
+        --tree-width: 1em;
     }
 }

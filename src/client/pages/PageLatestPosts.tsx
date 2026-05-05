@@ -70,7 +70,7 @@ function renderChildTrees(nodes: ChildTreeNode[]) {
     if (!nodes.length) return null
 
     return (
-        <TreeUl start="top" firstMargin={8} secondMargin={8} innerPadding={0}>
+        <TreeUl start="top" firstMargin={8} secondMargin={8} innerPadding={8}>
             {nodes.map(({ note, children }) => (
                 <li key={note.id}>
                     <Note note={note} revision={note.latestRevision} />
@@ -172,5 +172,7 @@ export function PageLatestPosts() {
         index = nextIndex - 1
     }
 
-    return <div>{noteBlocks}</div>
+    return (
+        <div>{noteBlocks}</div>
+    )
 }

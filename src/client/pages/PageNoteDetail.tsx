@@ -98,6 +98,7 @@ const queryNoteChildsOnly = graphql(`
 
 function ChildTree(props: {
     childs: NonNullable<ReturnType<NonNullable<(typeof queryNote)["__apiType"]>>["note"]>["childs"]
+    infinity: boolean
 }) {
     if (!props.childs.length) return null
 
@@ -113,7 +114,9 @@ function ChildTree(props: {
                                 note={relation.child}
                                 revision={relation.child.latestRevision}
                             />
-                            {relation.child.childs.length > 0 && <GrandChildTree id={relation.child.id} />}
+                            {relation.child.childs.length > 0 && (
+                                <GrandChildTree id={relation.child.id} infinity={props.infinity} />
+                            )}
                         </li>
                     )
             )}
@@ -121,29 +124,38 @@ function ChildTree(props: {
     )
 }
 
-function GrandChildTreeInner({ id }: { id: string }) {
+function GrandChildTreeInner({ id, infinity }: { id: string; infinity: boolean }) {
     const { data, loading, error } = useQuery(queryNoteChildsOnly, { variables: { id } })
     if (loading) return <div>Loading...</div>
     if (error || !data?.note) return <div>{id}</div>
 
-    return <ChildTree childs={data.note.childs} />
+    return <ChildTree childs={data.note.childs} infinity={infinity} />
 }
 
-function GrandChildTree(props: { id: string }) {
-    const [mount, setMount] = useState(false)
+function GrandChildTree(props: { id: string; infinity: boolean }) {
+    const [mount, setMount] = useState(props.infinity)
+    const [infinity, setInfinity] = useState(props.infinity)
 
     if (!mount) {
         return (
             <TreeUl start="top" firstMargin={8} secondMargin={8} innerPadding={0}>
                 <li>
                     <button onClick={() => setMount(true)}>孫の顔を見る</button>
+                    <button
+                        onClick={() => {
+                            setInfinity(true)
+                            setMount(true)
+                        }}
+                    >
+                        末代まで見る
+                    </button>
                 </li>
             </TreeUl>
         )
     }
 
     // なんかuseLazyQueryの型が変だったのでマウントを遅らせる形でごまかした (TODO: useLazyQuery が使えるならそっちを使うべき)
-    return <GrandChildTreeInner id={props.id} />
+    return <GrandChildTreeInner id={props.id} infinity={infinity} />
 }
 
 export function PageNoteDetail() {
@@ -179,7 +191,7 @@ export function PageNoteDetail() {
                     )}
                 </TreeUl>
                 <Note note={data.note} revision={revision} />
-                <ChildTree childs={data.note.childs} />
+                <ChildTree childs={data.note.childs} infinity={false} />
             </div>
         )
     )

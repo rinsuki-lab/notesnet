@@ -10,7 +10,7 @@ router.route("/api", apiRouter)
 const ASSET_CACHE_CONTROL = `public, immutable, max-age=${60 * 60 * 24 * 7}, stale-while-revalidate=${60 * 60 * 24 * 30}`
 
 router.use(
-    "/assets",
+    "/assets/*",
     etag({
         retainedHeaders: ["Vary"],
     }),

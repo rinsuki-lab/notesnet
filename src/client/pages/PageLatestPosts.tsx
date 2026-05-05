@@ -1,7 +1,7 @@
 import { useQuery } from "@apollo/client/react"
 import { useEffect, useRef } from "react"
 
-import { graphql } from "../api/graphql"
+import { type DocumentType, graphql } from "../api/graphql"
 import { Note } from "../components/Note"
 import { SimpleNoteLink } from "../components/SimpleNoteLink"
 import { TreeUl } from "../components/TreeUl"
@@ -36,6 +36,50 @@ const queryRecentNotes = graphql(`
         }
     }
 `)
+
+type RecentNote = DocumentType<typeof queryRecentNotes>["recentNotes"][number]
+type RenderableRecentNote = RecentNote & {
+    latestRevision: NonNullable<RecentNote["latestRevision"]>
+}
+type ChildTreeNode = {
+    note: RenderableRecentNote
+    children: ChildTreeNode[]
+}
+
+function collectChildTrees(notes: RecentNote[], parentId: string, startIndex: number) {
+    const nodes: ChildTreeNode[] = []
+    let index = startIndex
+
+    while (index < notes.length) {
+        const note = notes[index]
+        if (note == null) break
+        if (note.latestRevision == null) break
+        if (note.parents.length !== 1) break
+        if (note.parents[0]?.parent?.id !== parentId) break
+
+        const renderableNote = note as RenderableRecentNote
+        const { nodes: children, nextIndex } = collectChildTrees(notes, note.id, index + 1)
+        nodes.push({ note: renderableNote, children })
+        index = nextIndex
+    }
+
+    return { nodes, nextIndex: index }
+}
+
+function renderChildTrees(nodes: ChildTreeNode[]) {
+    if (!nodes.length) return null
+
+    return (
+        <TreeUl start="top" firstMargin={8} secondMargin={8} innerPadding={0}>
+            {nodes.map(({ note, children }) => (
+                <li key={note.id}>
+                    <Note note={note} revision={note.latestRevision} />
+                    {renderChildTrees(children)}
+                </li>
+            ))}
+        </TreeUl>
+    )
+}
 
 export function PageLatestPosts() {
     const { data, loading, error } = useQuery(queryRecentNotes)
@@ -96,54 +140,37 @@ export function PageLatestPosts() {
             </div>
         )
 
-    const shouldSkipIds = new Set()
-
     const reversedNotes = data.recentNotes.toReversed()
+    const noteBlocks = []
 
-    return (
-        <div>
-            {reversedNotes.map((note, i) => {
-                if (shouldSkipIds.has(note.id)) return null
-                const parents = note.parents.map(p => p.parent).filter(p => p != null)
-                const rev = note.latestRevision
-                if (!rev) return null
+    for (let index = 0; index < reversedNotes.length; index++) {
+        const note = reversedNotes[index]
+        if (note == null) continue
+        const parents = note.parents.map(p => p.parent).filter(p => p != null)
+        const rev = note.latestRevision
+        if (!rev) continue
 
-                const childNodes = []
-                for (const nextNote of reversedNotes.slice(i + 1)) {
-                    if (nextNote.parents.length !== 1) break
-                    if (nextNote.parents[0]?.parent?.id !== note.id) break
-                    if (nextNote.latestRevision == null) break
-                    childNodes.push(nextNote)
-                    shouldSkipIds.add(nextNote.id)
-                }
+        const { nodes: childTrees, nextIndex } = collectChildTrees(reversedNotes, note.id, index + 1)
+        noteBlocks.push(
+            <div key={rev.id}>
+                <TreeUl start="bottom" firstMargin={8} secondMargin={8} innerPadding={0}>
+                    {parents.map(parent => (
+                        <li key={parent.id}>
+                            <ReplyButton id={parent.id} />
+                            <SimpleNoteLink
+                                id={parent.id}
+                                summary={parent.latestRevision?.summary || ""}
+                                textForSearch={parent.latestRevision?.textForSearch || ""}
+                            />
+                        </li>
+                    ))}
+                </TreeUl>
+                <Note note={note} revision={rev} />
+                {renderChildTrees(childTrees)}
+            </div>
+        )
+        index = nextIndex - 1
+    }
 
-                return (
-                    <div key={rev.id}>
-                        <TreeUl start="bottom" firstMargin={8} secondMargin={8} innerPadding={0}>
-                            {parents.map(parent => (
-                                <li key={parent.id}>
-                                    <ReplyButton id={parent.id} />
-                                    <SimpleNoteLink
-                                        id={parent.id}
-                                        summary={parent.latestRevision?.summary || ""}
-                                        textForSearch={parent.latestRevision?.textForSearch || ""}
-                                    />
-                                </li>
-                            ))}
-                        </TreeUl>
-                        <Note note={note} revision={rev} />
-                        {childNodes.length > 0 && (
-                            <TreeUl start="top" firstMargin={8} secondMargin={8} innerPadding={0}>
-                                {childNodes.map(note => (
-                                    <li key={note.id}>
-                                        <Note note={note} revision={note.latestRevision!} />
-                                    </li>
-                                ))}
-                            </TreeUl>
-                        )}
-                    </div>
-                )
-            })}
-        </div>
-    )
+    return <div>{noteBlocks}</div>
 }

@@ -25,6 +25,8 @@
     & > .text-input {
         grid-area: text;
         resize: vertical;
+        field-sizing: content;
+        min-height: 2lh;
     }
     & > .send-button {
         grid-area: send;

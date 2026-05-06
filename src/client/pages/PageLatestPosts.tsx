@@ -172,7 +172,5 @@ export function PageLatestPosts() {
         index = nextIndex - 1
     }
 
-    return (
-        <div>{noteBlocks}</div>
-    )
+    return <div>{noteBlocks}</div>
 }

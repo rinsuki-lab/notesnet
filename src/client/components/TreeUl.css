@@ -11,7 +11,8 @@ ul.tree {
     & > li {
         position: relative;
         list-style: none;
-        &::before, &::after {
+        &::before,
+        &::after {
             content: "";
             position: absolute;
             left: calc(-0.5 * var(--tree-width));

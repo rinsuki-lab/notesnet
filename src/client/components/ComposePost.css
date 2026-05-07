@@ -10,6 +10,7 @@
     gap: 8px;
     grid-template-areas:
         "parents send"
+        "summary send"
         "scope send"
         "text send";
 
@@ -21,6 +22,9 @@
 
     & > .scope-select {
         grid-area: scope;
+    }
+    & > .summary-input {
+        grid-area: summary;
     }
     & > .text-input {
         grid-area: text;

@@ -1,5 +1,5 @@
 import { useQuery, useMutation } from "@apollo/client/react"
-import { useCallback, useContext, useState } from "react"
+import { useCallback, useContext, useState, type KeyboardEvent } from "react"
 
 import { graphql } from "../api/graphql/index.ts"
 
@@ -32,6 +32,7 @@ const mutationCreateNewNote = graphql(`
 export function ComposePost() {
     const replyContext = useContext(ReplyContext)
     const [selectedScopeId, setSelectedScopeId] = useState("")
+    const [summary, setSummary] = useState("")
     const [text, setText] = useState("")
 
     const scopes = useQuery(queryMyScopes)
@@ -51,6 +52,7 @@ export function ComposePost() {
             cache.evict({ fieldName: "recentNotes" })
         },
         onCompleted() {
+            setSummary("")
             setText("")
             replyContext?.[1]([])
         },
@@ -65,6 +67,7 @@ export function ComposePost() {
 
     const submit = useCallback(() => {
         if (!canSubmit) return
+        const trimmedSummary = summary.trim()
         void createNewNote({
             variables: {
                 input: {
@@ -75,7 +78,7 @@ export function ComposePost() {
                     textForSearch: text,
                     startedAt: null,
                     writtenAt: null,
-                    summary: null,
+                    summary: trimmedSummary.length ? trimmedSummary : null,
                     parents: replyContext
                         ? replyContext[0].map(noteId => {
                               return {
@@ -86,7 +89,17 @@ export function ComposePost() {
                 },
             },
         })
-    }, [text, effectiveScopeId, canSubmit, createNewNote, replyContext?.[0].join(",")])
+    }, [text, summary, effectiveScopeId, canSubmit, createNewNote, replyContext?.[0].join(",")])
+
+    const handleSubmitKeyDown = useCallback(
+        (e: KeyboardEvent) => {
+            if ((e.metaKey || e.ctrlKey) && e.code === "Enter") {
+                e.preventDefault()
+                submit()
+            }
+        },
+        [submit],
+    )
 
     return (
         <div className="compose-post">
@@ -110,6 +123,15 @@ export function ComposePost() {
                     "現在何も選択していません"
                 )}
             </div>
+            <input
+                className="summary-input"
+                type="text"
+                value={summary}
+                onChange={e => setSummary(e.currentTarget.value)}
+                placeholder="Summary (optional)"
+                disabled={createNewNoteResult.loading}
+                onKeyDown={handleSubmitKeyDown}
+            />
             {scopes.data != null ? (
                 <select
                     className="scope-select"
@@ -139,12 +161,7 @@ export function ComposePost() {
                 value={text}
                 onChange={e => setText(e.currentTarget.value)}
                 disabled={createNewNoteResult.loading}
-                onKeyDown={e => {
-                    if ((e.metaKey || e.ctrlKey) && e.code === "Enter") {
-                        e.preventDefault()
-                        submit()
-                    }
-                }}
+                onKeyDown={handleSubmitKeyDown}
             />
             <button className="send-button" type="button" onClick={submit} disabled={!canSubmit}>
                 Send

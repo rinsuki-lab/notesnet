@@ -46,11 +46,19 @@ export type CreateNewNoteRevisionInput = {
 export type Mutation = {
   __typename?: 'Mutation';
   createNewNote: Note;
+  updateNote: Note;
 };
 
 
 export type MutationCreateNewNoteArgs = {
   input: CreateNewNoteInput;
+};
+
+
+export type MutationUpdateNoteArgs = {
+  noteId: Scalars['ID']['input'];
+  previousRevisionId: Scalars['ID']['input'];
+  revision: CreateNewNoteRevisionInput;
 };
 
 export type Note = {

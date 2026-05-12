@@ -16,7 +16,7 @@ const CreateNewNoteParentInput = builder.inputType("CreateNewNoteParentInput", {
     }),
 })
 
-const CreateNewNoteRevisionInput = builder.inputType("CreateNewNoteRevisionInput", {
+export const CreateNewNoteRevisionInput = builder.inputType("CreateNewNoteRevisionInput", {
     fields: t => ({
         summary: t.string(),
         textForSearch: t.string({ required: true }),

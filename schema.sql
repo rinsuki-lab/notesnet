@@ -83,7 +83,7 @@ CREATE TABLE note_revisions (
     id UUID PRIMARY KEY,
     note_id UUID NOT NULL REFERENCES notes(id) ON DELETE CASCADE,
     author_persona_id UUID NOT NULL REFERENCES personas(id),
-    next_revision_id UUID REFERENCES note_revisions(id) ON DELETE SET NULL,
+    next_revision_id UUID REFERENCES note_revisions(id) ON DELETE SET NULL DEFERRABLE INITIALLY IMMEDIATE,
 
     summary TEXT,
     text_for_search TEXT NOT NULL,

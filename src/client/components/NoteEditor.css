@@ -9,11 +9,8 @@
         box-sizing: border-box;
     }
 
-    & > .text-input {
-        width: 100%;
-        box-sizing: border-box;
-        resize: vertical;
-        field-sizing: content;
+    & > .content-editor {
+        display: contents;
     }
 
     & > .actions {

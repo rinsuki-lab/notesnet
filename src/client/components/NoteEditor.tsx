@@ -1,7 +1,8 @@
 import { useMutation } from "@apollo/client/react"
-import { useCallback, useEffect, useRef, useState, type KeyboardEvent } from "react"
+import { useCallback, useState, type KeyboardEvent } from "react"
 
 import { graphql } from "../api/graphql/index.ts"
+import { editableNoteContentTypes, type NoteContentEditModule, type NoteContents } from "./note-content-types/index.ts"
 
 import "./NoteEditor.css"
 
@@ -13,36 +14,47 @@ const mutationUpdateNote = graphql(`
     }
 `)
 
-export function NoteEditor(props: {
+type NoteEditorProps = {
     note: { id: string }
     revision: {
         id: string
         summary?: string | null
         writtenAt: string
+        contentType: string
         content: unknown
+        attributes: unknown
     }
     onClose: () => void
-}) {
-    const initialText = (() => {
-        const content = props.revision.content
-        if (content && typeof content === "object" && "text" in content && typeof content.text === "string") {
-            return content.text
-        }
-        return ""
-    })()
+}
+
+export function NoteEditor(props: NoteEditorProps) {
+    const module = editableNoteContentTypes[props.revision.contentType]
+    if (module == null) {
+        return (
+            <div className="note-editor">
+                <div className="error">このコンテンツタイプは編集できません: {props.revision.contentType}</div>
+                <div className="actions">
+                    <button type="button" onClick={props.onClose}>
+                        Close
+                    </button>
+                </div>
+            </div>
+        )
+    }
+
+    return <NoteEditorInner {...props} module={module} />
+}
+
+function NoteEditorInner(props: NoteEditorProps & { module: NoteContentEditModule<NoteContents> }) {
+    const { module } = props
+    const initialContents: NoteContents = {
+        content: props.revision.content,
+        attributes: props.revision.attributes,
+    }
     const initialSummary = props.revision.summary ?? ""
 
     const [summary, setSummary] = useState(initialSummary)
-    const [text, setText] = useState(initialText)
-    const textareaRef = useRef<HTMLTextAreaElement>(null)
-
-    useEffect(() => {
-        const el = textareaRef.current
-        if (el == null) return
-        el.focus()
-        const len = el.value.length
-        el.setSelectionRange(len, len)
-    }, [])
+    const [contents, setContents] = useState<NoteContents>(initialContents)
 
     const [updateNote, updateNoteResult] = useMutation(mutationUpdateNote, {
         update(cache) {
@@ -57,8 +69,8 @@ export function NoteEditor(props: {
         },
     })
 
-    const isDirty = summary !== initialSummary || text !== initialText
-    const canSubmit = isDirty && text.trim().length > 0 && !updateNoteResult.loading
+    const isDirty = summary !== initialSummary || !module.isEqual(initialContents, contents)
+    const canSubmit = isDirty && module.canSubmit(contents) && !updateNoteResult.loading
 
     const submit = useCallback(() => {
         if (!canSubmit) return
@@ -68,17 +80,27 @@ export function NoteEditor(props: {
                 noteId: props.note.id,
                 previousRevisionId: props.revision.id,
                 revision: {
-                    content: { text },
-                    contentType: "text/plain",
-                    attributes: {},
-                    textForSearch: text,
+                    content: contents.content,
+                    contentType: props.revision.contentType,
+                    attributes: contents.attributes,
+                    textForSearch: module.computeTextForSearch(contents),
                     startedAt: null,
                     writtenAt: props.revision.writtenAt,
                     summary: trimmedSummary.length ? trimmedSummary : null,
                 },
             },
         })
-    }, [canSubmit, summary, text, updateNote, props.note.id, props.revision.id, props.revision.writtenAt])
+    }, [
+        canSubmit,
+        summary,
+        contents,
+        module,
+        updateNote,
+        props.note.id,
+        props.revision.id,
+        props.revision.contentType,
+        props.revision.writtenAt,
+    ])
 
     const cancel = useCallback(() => {
         if (updateNoteResult.loading) return
@@ -110,13 +132,15 @@ export function NoteEditor(props: {
                 placeholder="Summary (optional)"
                 disabled={updateNoteResult.loading}
             />
-            <textarea
-                ref={textareaRef}
-                className="text-input"
-                value={text}
-                onChange={e => setText(e.currentTarget.value)}
-                disabled={updateNoteResult.loading}
-            />
+            <div className="content-editor">
+                <module.Editor
+                    content={contents.content}
+                    attributes={contents.attributes}
+                    update={setContents}
+                    disabled={updateNoteResult.loading}
+                    autoFocus
+                />
+            </div>
             <div className="actions">
                 <button type="button" onClick={submit} disabled={!canSubmit}>
                     Save

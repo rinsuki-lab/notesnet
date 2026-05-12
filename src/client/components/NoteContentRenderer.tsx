@@ -1,4 +1,4 @@
-import { JSX } from "react"
+import { noteContentTypes } from "./note-content-types"
 
 type NoteContent = {
     contentType: string
@@ -6,22 +6,11 @@ type NoteContent = {
     attributes: unknown
 }
 
-type TextPlainNote = NoteContent & {
-    content: {
-        text: string
-    }
-}
-
-const noteRenderers = {
-    "text/plain": (props: { note: NoteContent }) => (
-        <p style={{ whiteSpace: "pre-wrap" }}>{(props.note as TextPlainNote).content.text}</p>
-    ),
-} as Partial<Record<string, (props: { note: NoteContent }) => JSX.Element>>
-
 export const NoteContentRenderer = (props: { note: NoteContent }) => {
-    const Renderer = noteRenderers[props.note.contentType]
-    if (Renderer == null) {
+    const module = noteContentTypes[props.note.contentType]
+    if (module == null) {
         return <p>Unsupported content type: {props.note.contentType}</p>
     }
-    return <Renderer note={props.note} />
+    const { Renderer } = module
+    return <Renderer content={props.note.content} attributes={props.note.attributes} />
 }

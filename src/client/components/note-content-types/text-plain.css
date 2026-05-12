@@ -1,0 +1,7 @@
+.text-plain-textarea {
+    width: 100%;
+    box-sizing: border-box;
+    resize: vertical;
+    field-sizing: content;
+    min-height: 2lh;
+}

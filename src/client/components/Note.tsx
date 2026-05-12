@@ -2,6 +2,7 @@ import { useState } from "react"
 import { Link } from "react-router"
 
 import { ReplyButton } from "../contexts/ReplyContext"
+import { editableNoteContentTypes } from "./note-content-types/index.ts"
 import { NoteContentRenderer } from "./NoteContentRenderer"
 import { NoteEditor } from "./NoteEditor"
 
@@ -28,7 +29,7 @@ export function Note(props: {
 }) {
     const [editing, setEditing] = useState(false)
     const canModify = props.note.scope?.permissions?.canModifyNotes === true
-    const isPlainText = props.revision.contentType === "text/plain"
+    const isEditable = editableNoteContentTypes[props.revision.contentType] != null
 
     return (
         <div className="note">
@@ -42,8 +43,8 @@ export function Note(props: {
                         type="button"
                         className="note-edit-button"
                         onClick={() => setEditing(true)}
-                        disabled={!isPlainText}
-                        title={isPlainText ? undefined : "text/plain 以外のノートはまだ編集できません"}
+                        disabled={!isEditable}
+                        title={isEditable ? undefined : "このコンテンツタイプはまだ編集できません"}
                     >
                         Edit
                     </button>

@@ -12,6 +12,7 @@
         "parents send"
         "summary send"
         "scope send"
+        "contenttype send"
         "text send";
 
     & > .parents-list {
@@ -23,14 +24,14 @@
     & > .scope-select {
         grid-area: scope;
     }
+    & > .contenttype-select {
+        grid-area: contenttype;
+    }
     & > .summary-input {
         grid-area: summary;
     }
-    & > .text-input {
+    & > .content-editor {
         grid-area: text;
-        resize: vertical;
-        field-sizing: content;
-        min-height: 2lh;
     }
     & > .send-button {
         grid-area: send;

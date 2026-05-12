@@ -71,14 +71,16 @@ export function ComposePost() {
         void createNewNote({
             variables: {
                 input: {
-                    content: { text },
                     scopeId: effectiveScopeId,
-                    contentType: "text/plain",
-                    attributes: {},
-                    textForSearch: text,
-                    startedAt: null,
-                    writtenAt: null,
-                    summary: trimmedSummary.length ? trimmedSummary : null,
+                    revision: {
+                        content: { text },
+                        contentType: "text/plain",
+                        attributes: {},
+                        textForSearch: text,
+                        startedAt: null,
+                        writtenAt: null,
+                        summary: trimmedSummary.length ? trimmedSummary : null,
+                    },
                     parents: replyContext
                         ? replyContext[0].map(noteId => {
                               return {
@@ -98,7 +100,7 @@ export function ComposePost() {
                 submit()
             }
         },
-        [submit],
+        [submit]
     )
 
     return (

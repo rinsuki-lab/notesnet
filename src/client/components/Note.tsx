@@ -28,7 +28,9 @@ export function Note(props: {
                 {props.note.scope?.permissions?.canAddTheirNotesToChild ? <ReplyButton id={props.note.id} /> : null}
                 <Link to={`/notes/${props.note.id}`}>{props.revision.writtenAt}</Link>・{props.revision.contentType}
             </div>
-            <p><strong>{props.revision.summary}</strong></p>
+            <p>
+                <strong>{props.revision.summary}</strong>
+            </p>
             <NoteContentRenderer note={props.revision} />
         </div>
     )

@@ -16,9 +16,8 @@ const CreateNewNoteParentInput = builder.inputType("CreateNewNoteParentInput", {
     }),
 })
 
-const CreateNewNoteInput = builder.inputType("CreateNewNoteInput", {
+const CreateNewNoteRevisionInput = builder.inputType("CreateNewNoteRevisionInput", {
     fields: t => ({
-        scopeId: t.id({ required: true }),
         summary: t.string(),
         textForSearch: t.string({ required: true }),
         contentType: t.string({ required: true }),
@@ -26,6 +25,13 @@ const CreateNewNoteInput = builder.inputType("CreateNewNoteInput", {
         attributes: t.field({ type: "JSON", required: true }),
         startedAt: t.field({ type: "DateTime" }),
         writtenAt: t.field({ type: "DateTime" }),
+    }),
+})
+
+const CreateNewNoteInput = builder.inputType("CreateNewNoteInput", {
+    fields: t => ({
+        scopeId: t.id({ required: true }),
+        revision: t.field({ type: CreateNewNoteRevisionInput, required: true }),
         parents: t.field({
             type: [CreateNewNoteParentInput],
             validate: v.optional(v.pipe(v.array(v.unknown()), v.maxLength(10))),
@@ -62,13 +68,13 @@ builder.mutationField("createNewNote", t =>
                     id: note.id,
                     authorPersonaId: ctx.authorized.personaId,
                     noteId: note.id,
-                    contentType: args.input.contentType,
-                    content: args.input.content,
-                    attributes: args.input.attributes,
-                    textForSearch: args.input.textForSearch,
-                    summary: args.input.summary?.length ? args.input.summary : null,
-                    startedAt: args.input.startedAt ? new Date(args.input.startedAt) : null,
-                    writtenAt: args.input.writtenAt ? new Date(args.input.writtenAt) : new Date(),
+                    contentType: args.input.revision.contentType,
+                    content: args.input.revision.content,
+                    attributes: args.input.revision.attributes,
+                    textForSearch: args.input.revision.textForSearch,
+                    summary: args.input.revision.summary?.length ? args.input.revision.summary : null,
+                    startedAt: args.input.revision.startedAt ? new Date(args.input.revision.startedAt) : null,
+                    writtenAt: args.input.revision.writtenAt ? new Date(args.input.revision.writtenAt) : new Date(),
                 })
 
                 if (args.input.parents?.length) {

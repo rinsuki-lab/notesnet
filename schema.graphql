@@ -1,13 +1,7 @@
 input CreateNewNoteInput {
-  attributes: JSON!
-  content: JSON!
-  contentType: String!
   parents: [CreateNewNoteParentInput!]
+  revision: CreateNewNoteRevisionInput!
   scopeId: ID!
-  startedAt: DateTime
-  summary: String
-  textForSearch: String!
-  writtenAt: DateTime
 }
 
 input CreateNewNoteParentInput {
@@ -15,6 +9,16 @@ input CreateNewNoteParentInput {
   order: Int
   shouldListedAsChild: Boolean! = true
   shouldListedAsParent: Boolean! = true
+}
+
+input CreateNewNoteRevisionInput {
+  attributes: JSON!
+  content: JSON!
+  contentType: String!
+  startedAt: DateTime
+  summary: String
+  textForSearch: String!
+  writtenAt: DateTime
 }
 
 """

@@ -21,15 +21,9 @@ export type Scalars = {
 };
 
 export type CreateNewNoteInput = {
-  attributes: Scalars['JSON']['input'];
-  content: Scalars['JSON']['input'];
-  contentType: Scalars['String']['input'];
   parents?: InputMaybe<Array<CreateNewNoteParentInput>>;
+  revision: CreateNewNoteRevisionInput;
   scopeId: Scalars['ID']['input'];
-  startedAt?: InputMaybe<Scalars['DateTime']['input']>;
-  summary?: InputMaybe<Scalars['String']['input']>;
-  textForSearch: Scalars['String']['input'];
-  writtenAt?: InputMaybe<Scalars['DateTime']['input']>;
 };
 
 export type CreateNewNoteParentInput = {
@@ -37,6 +31,16 @@ export type CreateNewNoteParentInput = {
   order?: InputMaybe<Scalars['Int']['input']>;
   shouldListedAsChild?: Scalars['Boolean']['input'];
   shouldListedAsParent?: Scalars['Boolean']['input'];
+};
+
+export type CreateNewNoteRevisionInput = {
+  attributes: Scalars['JSON']['input'];
+  content: Scalars['JSON']['input'];
+  contentType: Scalars['String']['input'];
+  startedAt?: InputMaybe<Scalars['DateTime']['input']>;
+  summary?: InputMaybe<Scalars['String']['input']>;
+  textForSearch: Scalars['String']['input'];
+  writtenAt?: InputMaybe<Scalars['DateTime']['input']>;
 };
 
 export type Mutation = {

@@ -1,0 +1,27 @@
+.note-editor {
+    margin-top: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    & > .summary-input {
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    & > .text-input {
+        width: 100%;
+        box-sizing: border-box;
+        resize: vertical;
+        field-sizing: content;
+    }
+
+    & > .actions {
+        display: flex;
+        gap: 8px;
+    }
+
+    & > .error {
+        color: #b00;
+    }
+}

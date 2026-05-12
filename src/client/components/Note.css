@@ -2,4 +2,19 @@
     border: 1px solid #222;
     padding: 8px;
     margin: 8px 0;
+
+    & > .note-meta {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+
+        & > .note-meta-left {
+            flex: 1 1 auto;
+            min-width: 0;
+        }
+
+        & > .note-edit-button {
+            flex: 0 0 auto;
+        }
+    }
 }

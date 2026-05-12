@@ -14,6 +14,7 @@ const queryRecentNotes = graphql(`
             scope {
                 permissions {
                     canAddTheirNotesToChild
+                    canModifyNotes
                 }
             }
             latestRevision {

@@ -23,6 +23,7 @@ const queryNote = graphql(`
             scope {
                 permissions {
                     canAddTheirNotesToChild
+                    canModifyNotes
                 }
             }
             parents {
@@ -53,6 +54,7 @@ const queryNote = graphql(`
                     scope {
                         permissions {
                             canAddTheirNotesToChild
+                            canModifyNotes
                         }
                     }
                     childs {
@@ -83,6 +85,7 @@ const queryNoteChildsOnly = graphql(`
                     scope {
                         permissions {
                             canAddTheirNotesToChild
+                            canModifyNotes
                         }
                     }
                     childs {

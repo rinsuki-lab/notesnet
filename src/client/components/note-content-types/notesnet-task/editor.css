@@ -1,0 +1,17 @@
+.notesnet-task-editor {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5em;
+
+    .notesnet-task-editor-input {
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .notesnet-task-editor-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5em;
+        align-items: center;
+    }
+}

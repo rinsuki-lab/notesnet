@@ -6,6 +6,11 @@
     border-top: 1px solid #ccc;
     padding-bottom: env(safe-area-inset-bottom);
 
+    @media screen and (prefers-color-scheme: dark) {
+        background: rgba(0, 0, 0, 0.8);
+        border-top: 1px solid #333;
+    }
+
     display: grid;
     grid-template-columns: 1fr auto;
     gap: 8px;

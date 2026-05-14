@@ -3,6 +3,10 @@
     padding: 8px;
     margin: 8px 0;
 
+    @media screen and (prefers-color-scheme: dark) {
+        border: 1px solid #666;
+    }
+
     & > .note-meta {
         display: flex;
         align-items: center;

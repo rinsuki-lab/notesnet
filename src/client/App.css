@@ -4,6 +4,12 @@ body {
     overflow-wrap: anywhere;
 }
 
+@media screen and (prefers-color-scheme: dark) {
+    body {
+        background-color: black;
+    }
+}
+
 @media screen and (max-width: 400px) {
     body {
         font-size: 12px;

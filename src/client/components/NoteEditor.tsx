@@ -52,15 +52,19 @@ export function NoteEditor(props: NoteEditorProps) {
 }
 
 function NoteEditorInner(props: NoteEditorProps & { module: NoteContentEditModule<NoteContents> }) {
-    const { module } = props
-    const initialContents: NoteContents = {
+    const initialSummary = props.revision.summary ?? ""
+    const originalContents: NoteContents = {
         content: props.revision.content,
         attributes: props.revision.attributes,
     }
-    const initialSummary = props.revision.summary ?? ""
 
     const [summary, setSummary] = useState(initialSummary)
-    const [contents, setContents] = useState<NoteContents>(initialContents)
+    const [contentType, setContentType] = useState<string>(props.revision.contentType)
+    const [contents, setContents] = useState<NoteContents>(originalContents)
+
+    const module = editableNoteContentTypes[contentType] ?? props.module
+    const isOriginalContentType = contentType === props.revision.contentType
+    const initialContents: NoteContents = isOriginalContentType ? originalContents : module.initialContents()
 
     const [updateNote, updateNoteResult] = useMutation(mutationUpdateNote, {
         update(cache) {
@@ -101,7 +105,7 @@ function NoteEditorInner(props: NoteEditorProps & { module: NoteContentEditModul
                 previousRevisionId: props.revision.id,
                 revision: {
                     content: contents.content,
-                    contentType: props.revision.contentType,
+                    contentType,
                     attributes: contents.attributes,
                     textForSearch: module.computeTextForSearch(contents),
                     startedAt: null,
@@ -114,11 +118,11 @@ function NoteEditorInner(props: NoteEditorProps & { module: NoteContentEditModul
         canSubmit,
         summary,
         contents,
+        contentType,
         module,
         updateNote,
         props.note.id,
         props.revision.id,
-        props.revision.contentType,
         props.revision.writtenAt,
     ])
 
@@ -137,6 +141,24 @@ function NoteEditorInner(props: NoteEditorProps & { module: NoteContentEditModul
             },
         })
     }, [busy, deleteNote, props.note.id])
+
+    const handleContentTypeChange = useCallback(
+        (nextContentType: string) => {
+            if (nextContentType === contentType) return
+            const nextModule = editableNoteContentTypes[nextContentType]
+            if (nextModule == null) return
+            if (isDirty && !window.confirm("入力内容を破棄しますか?")) {
+                return
+            }
+            setContentType(nextContentType)
+            if (nextContentType === props.revision.contentType) {
+                setContents(originalContents)
+            } else {
+                setContents(nextModule.initialContents())
+            }
+        },
+        [contentType, isDirty, originalContents, props.revision.contentType]
+    )
 
     const handleKeyDown = useCallback(
         (e: KeyboardEvent) => {
@@ -162,6 +184,18 @@ function NoteEditorInner(props: NoteEditorProps & { module: NoteContentEditModul
                 placeholder="Summary (optional)"
                 disabled={busy}
             />
+            <select
+                className="contenttype-select"
+                value={contentType}
+                disabled={busy}
+                onChange={e => handleContentTypeChange(e.currentTarget.value)}
+            >
+                {Object.entries(editableNoteContentTypes).map(([key, m]) => (
+                    <option key={key} value={key}>
+                        {m.contentType}
+                    </option>
+                ))}
+            </select>
             <div className="content-editor">
                 <module.Editor
                     content={contents.content}

@@ -16,6 +16,10 @@
     & > .actions {
         display: flex;
         gap: 8px;
+
+        & > .delete-button {
+            margin-inline-start: auto;
+        }
     }
 
     & > .error {

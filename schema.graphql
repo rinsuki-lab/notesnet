@@ -33,6 +33,7 @@ scalar JSON
 
 type Mutation {
   createNewNote(input: CreateNewNoteInput!): Note!
+  deleteNote(noteId: ID!): ID!
   updateNote(noteId: ID!, previousRevisionId: ID!, revision: CreateNewNoteRevisionInput!): Note!
 }
 

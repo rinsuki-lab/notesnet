@@ -5,4 +5,5 @@ builder.mutationType({
 })
 
 import "./create_new_note.ts"
+import "./delete_note.ts"
 import "./update_note.ts"

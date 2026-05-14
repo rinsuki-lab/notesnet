@@ -14,6 +14,12 @@ const mutationUpdateNote = graphql(`
     }
 `)
 
+const mutationDeleteNote = graphql(`
+    mutation DeleteNote($noteId: ID!) {
+        deleteNote(noteId: $noteId)
+    }
+`)
+
 type NoteEditorProps = {
     note: { id: string }
     revision: {
@@ -69,8 +75,22 @@ function NoteEditorInner(props: NoteEditorProps & { module: NoteContentEditModul
         },
     })
 
+    const [deleteNote, deleteNoteResult] = useMutation(mutationDeleteNote, {
+        update(cache) {
+            const cacheId = cache.identify({ __typename: "Note", id: props.note.id })
+            if (cacheId != null) {
+                cache.evict({ id: cacheId })
+                cache.gc()
+            }
+        },
+        onCompleted() {
+            props.onClose()
+        },
+    })
+
+    const busy = updateNoteResult.loading || deleteNoteResult.loading
     const isDirty = summary !== initialSummary || !module.isEqual(initialContents, contents)
-    const canSubmit = isDirty && module.canSubmit(contents) && !updateNoteResult.loading
+    const canSubmit = isDirty && module.canSubmit(contents) && !busy
 
     const submit = useCallback(() => {
         if (!canSubmit) return
@@ -103,10 +123,20 @@ function NoteEditorInner(props: NoteEditorProps & { module: NoteContentEditModul
     ])
 
     const cancel = useCallback(() => {
-        if (updateNoteResult.loading) return
+        if (busy) return
         if (isDirty && !window.confirm("変更を破棄しますか?")) return
         props.onClose()
-    }, [isDirty, props.onClose, updateNoteResult.loading])
+    }, [isDirty, props.onClose, busy])
+
+    const handleDelete = useCallback(() => {
+        if (busy) return
+        if (!window.confirm("このノートを削除しますか?この操作は取り消せません。")) return
+        void deleteNote({
+            variables: {
+                noteId: props.note.id,
+            },
+        })
+    }, [busy, deleteNote, props.note.id])
 
     const handleKeyDown = useCallback(
         (e: KeyboardEvent) => {
@@ -130,14 +160,14 @@ function NoteEditorInner(props: NoteEditorProps & { module: NoteContentEditModul
                 value={summary}
                 onChange={e => setSummary(e.currentTarget.value)}
                 placeholder="Summary (optional)"
-                disabled={updateNoteResult.loading}
+                disabled={busy}
             />
             <div className="content-editor">
                 <module.Editor
                     content={contents.content}
                     attributes={contents.attributes}
                     update={setContents}
-                    disabled={updateNoteResult.loading}
+                    disabled={busy}
                     autoFocus
                 />
             </div>
@@ -145,11 +175,15 @@ function NoteEditorInner(props: NoteEditorProps & { module: NoteContentEditModul
                 <button type="button" onClick={submit} disabled={!canSubmit}>
                     Save
                 </button>
-                <button type="button" onClick={cancel} disabled={updateNoteResult.loading}>
+                <button type="button" onClick={cancel} disabled={busy}>
                     Cancel
+                </button>
+                <button type="button" className="delete-button" onClick={handleDelete} disabled={busy}>
+                    Delete
                 </button>
             </div>
             {updateNoteResult.error && <div className="error">Failed to save: {`${updateNoteResult.error}`}</div>}
+            {deleteNoteResult.error && <div className="error">Failed to delete: {`${deleteNoteResult.error}`}</div>}
         </div>
     )
 }

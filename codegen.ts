@@ -9,6 +9,11 @@ const config: CodegenConfig = {
     generates: {
         "./src/client/api/graphql/": {
             preset: "client",
+            config: {
+                scalars: {
+                    DateTime: "string",
+                },
+            },
         },
         "./schema.graphql": {
             plugins: ["schema-ast"],

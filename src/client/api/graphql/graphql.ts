@@ -15,7 +15,7 @@ export type Scalars = {
   Int: { input: number; output: number; }
   Float: { input: number; output: number; }
   /** A date-time string at UTC, such as 2007-12-03T10:15:30Z, compliant with the `date-time` format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar.This scalar is serialized to a string in ISO 8601 format and parsed from a string in ISO 8601 format. */
-  DateTime: { input: any; output: any; }
+  DateTime: { input: string; output: string; }
   /** The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf). */
   JSON: { input: any; output: any; }
 };
@@ -178,21 +178,21 @@ export type SimpleNoteLinkFromIdQuery = { __typename?: 'Query', note?: { __typen
 export type RecentNotesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type RecentNotesQuery = { __typename?: 'Query', recentNotes: Array<{ __typename?: 'Note', id: string, scope?: { __typename?: 'Scope', permissions?: { __typename?: 'ScopePermission', canAddTheirNotesToChild: boolean, canModifyNotes: boolean } | null } | null, latestRevision?: { __typename?: 'NoteRevision', id: string, summary?: string | null, writtenAt: any, contentType: string, content: any, attributes: any } | null, parents: Array<{ __typename?: 'NoteRelation', parent?: { __typename?: 'Note', id: string, latestRevision?: { __typename?: 'NoteRevision', summary?: string | null, textForSearch: string } | null } | null }> }> };
+export type RecentNotesQuery = { __typename?: 'Query', recentNotes: Array<{ __typename?: 'Note', id: string, scope?: { __typename?: 'Scope', permissions?: { __typename?: 'ScopePermission', canAddTheirNotesToChild: boolean, canModifyNotes: boolean } | null } | null, latestRevision?: { __typename?: 'NoteRevision', id: string, summary?: string | null, writtenAt: string, contentType: string, content: any, attributes: any } | null, parents: Array<{ __typename?: 'NoteRelation', parent?: { __typename?: 'Note', id: string, latestRevision?: { __typename?: 'NoteRevision', summary?: string | null, textForSearch: string } | null } | null }> }> };
 
 export type GetNoteQueryVariables = Exact<{
   id: Scalars['ID']['input'];
 }>;
 
 
-export type GetNoteQuery = { __typename?: 'Query', note?: { __typename?: 'Note', id: string, latestRevision?: { __typename?: 'NoteRevision', id: string, summary?: string | null, writtenAt: any, contentType: string, content: any, attributes: any } | null, scope?: { __typename?: 'Scope', permissions?: { __typename?: 'ScopePermission', canAddTheirNotesToChild: boolean, canModifyNotes: boolean } | null } | null, parents: Array<{ __typename?: 'NoteRelation', parent?: { __typename?: 'Note', id: string, latestRevision?: { __typename?: 'NoteRevision', summary?: string | null, textForSearch: string } | null, scope?: { __typename?: 'Scope', permissions?: { __typename?: 'ScopePermission', canAddTheirNotesToChild: boolean } | null } | null } | null }>, childs: Array<{ __typename?: 'NoteRelation', child?: { __typename?: 'Note', id: string, latestRevision?: { __typename?: 'NoteRevision', id: string, summary?: string | null, writtenAt: any, contentType: string, content: any, attributes: any } | null, scope?: { __typename?: 'Scope', permissions?: { __typename?: 'ScopePermission', canAddTheirNotesToChild: boolean, canModifyNotes: boolean } | null } | null, childs: Array<{ __typename?: 'NoteRelation', child?: { __typename?: 'Note', id: string } | null }> } | null }> } | null };
+export type GetNoteQuery = { __typename?: 'Query', note?: { __typename?: 'Note', id: string, latestRevision?: { __typename?: 'NoteRevision', id: string, summary?: string | null, writtenAt: string, contentType: string, content: any, attributes: any } | null, scope?: { __typename?: 'Scope', permissions?: { __typename?: 'ScopePermission', canAddTheirNotesToChild: boolean, canModifyNotes: boolean } | null } | null, parents: Array<{ __typename?: 'NoteRelation', parent?: { __typename?: 'Note', id: string, latestRevision?: { __typename?: 'NoteRevision', summary?: string | null, textForSearch: string } | null, scope?: { __typename?: 'Scope', permissions?: { __typename?: 'ScopePermission', canAddTheirNotesToChild: boolean } | null } | null } | null }>, childs: Array<{ __typename?: 'NoteRelation', child?: { __typename?: 'Note', id: string, latestRevision?: { __typename?: 'NoteRevision', id: string, summary?: string | null, writtenAt: string, contentType: string, content: any, attributes: any } | null, scope?: { __typename?: 'Scope', permissions?: { __typename?: 'ScopePermission', canAddTheirNotesToChild: boolean, canModifyNotes: boolean } | null } | null, childs: Array<{ __typename?: 'NoteRelation', child?: { __typename?: 'Note', id: string } | null }> } | null }> } | null };
 
 export type GetNoteChildsQueryVariables = Exact<{
   id: Scalars['ID']['input'];
 }>;
 
 
-export type GetNoteChildsQuery = { __typename?: 'Query', note?: { __typename?: 'Note', childs: Array<{ __typename?: 'NoteRelation', child?: { __typename?: 'Note', id: string, latestRevision?: { __typename?: 'NoteRevision', id: string, summary?: string | null, writtenAt: any, contentType: string, content: any, attributes: any } | null, scope?: { __typename?: 'Scope', permissions?: { __typename?: 'ScopePermission', canAddTheirNotesToChild: boolean, canModifyNotes: boolean } | null } | null, childs: Array<{ __typename?: 'NoteRelation', child?: { __typename?: 'Note', id: string } | null }> } | null }> } | null };
+export type GetNoteChildsQuery = { __typename?: 'Query', note?: { __typename?: 'Note', childs: Array<{ __typename?: 'NoteRelation', child?: { __typename?: 'Note', id: string, latestRevision?: { __typename?: 'NoteRevision', id: string, summary?: string | null, writtenAt: string, contentType: string, content: any, attributes: any } | null, scope?: { __typename?: 'Scope', permissions?: { __typename?: 'ScopePermission', canAddTheirNotesToChild: boolean, canModifyNotes: boolean } | null } | null, childs: Array<{ __typename?: 'NoteRelation', child?: { __typename?: 'Note', id: string } | null }> } | null }> } | null };
 
 
 export const MyDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"My"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"viewer"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]} as unknown as DocumentNode<MyQuery, MyQueryVariables>;

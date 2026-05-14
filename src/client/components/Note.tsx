@@ -2,6 +2,7 @@ import { useState } from "react"
 import { Link } from "react-router"
 
 import { ReplyButton } from "../contexts/ReplyContext"
+import { formatNoteDate } from "../utils/format-note-date.ts"
 import { editableNoteContentTypes } from "./note-content-types/index.ts"
 import { NoteContentRenderer } from "./NoteContentRenderer"
 import { NoteEditor } from "./NoteEditor"
@@ -36,7 +37,10 @@ export function Note(props: {
             <div className="note-meta">
                 <div className="note-meta-left">
                     {props.note.scope?.permissions?.canAddTheirNotesToChild ? <ReplyButton id={props.note.id} /> : null}
-                    <Link to={`/notes/${props.note.id}`}>{props.revision.writtenAt}</Link>・{props.revision.contentType}
+                    <Link to={`/notes/${props.note.id}`} title={props.revision.writtenAt}>
+                        {formatNoteDate(new Date(props.revision.writtenAt))}
+                    </Link>
+                    ・{props.revision.contentType}
                 </div>
                 {canModify && !editing ? (
                     <button

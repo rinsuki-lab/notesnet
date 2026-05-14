@@ -1,5 +1,13 @@
 body {
     margin: 0;
+    font-family: system-ui;
+    overflow-wrap: anywhere;
+}
+
+@media screen and (max-width: 400px) {
+    body {
+        font-size: 12px;
+    }
 }
 
 #app-container {

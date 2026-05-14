@@ -111,12 +111,8 @@ function ChildTree(props: {
                 relation =>
                     relation.child &&
                     relation.child.latestRevision && (
-                        <li>
-                            <Note
-                                key={relation.child.id}
-                                note={relation.child}
-                                revision={relation.child.latestRevision}
-                            />
+                        <li key={relation.child.id}>
+                            <Note note={relation.child} revision={relation.child.latestRevision} />
                             {relation.child.childs.length > 0 && (
                                 <GrandChildTree id={relation.child.id} infinity={props.infinity} />
                             )}

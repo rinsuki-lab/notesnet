@@ -1,10 +1,7 @@
 .compose-post {
-    position: sticky;
-    bottom: 0;
     background: rgba(255, 255, 255, 0.8);
     padding: 8px;
     border-top: 1px solid #ccc;
-    padding-bottom: env(safe-area-inset-bottom);
 
     @media screen and (prefers-color-scheme: dark) {
         background: rgba(0, 0, 0, 0.8);

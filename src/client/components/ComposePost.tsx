@@ -1,5 +1,5 @@
 import { useQuery, useMutation } from "@apollo/client/react"
-import { useCallback, useContext, useState, type KeyboardEvent } from "react"
+import { forwardRef, useCallback, useContext, useImperativeHandle, useState, type KeyboardEvent } from "react"
 
 import { graphql } from "../api/graphql/index.ts"
 
@@ -30,7 +30,15 @@ const mutationCreateNewNote = graphql(`
     }
 `)
 
-export function ComposePost() {
+type Props = {
+    onAfterSubmit?: () => void
+}
+
+export type ComposePostHandle = {
+    isDirty: () => boolean
+}
+
+export const ComposePost = forwardRef<ComposePostHandle, Props>(function ComposePost({ onAfterSubmit }, ref) {
     const replyContext = useContext(ReplyContext)
     const [selectedScopeId, setSelectedScopeId] = useState("")
     const [summary, setSummary] = useState("")
@@ -62,6 +70,7 @@ export function ComposePost() {
             setSummary("")
             setContents(module.initialContents())
             replyContext?.[1]([])
+            onAfterSubmit?.()
         },
     })
 
@@ -71,6 +80,14 @@ export function ComposePost() {
         : (writableScopes[0]?.id ?? "")
 
     const canSubmit = effectiveScopeId.length > 0 && module.canSubmit(contents) && !createNewNoteResult.loading
+
+    useImperativeHandle(
+        ref,
+        () => ({
+            isDirty: () => summary.trim().length > 0 || !module.isEqual(module.initialContents(), contents),
+        }),
+        [summary, contents, module]
+    )
 
     const submit = useCallback(() => {
         if (!canSubmit) return
@@ -205,4 +222,4 @@ export function ComposePost() {
             {createNewNoteResult.error && <div>Failed to post: {`${createNewNoteResult.error}`}</div>}
         </div>
     )
-}
+})

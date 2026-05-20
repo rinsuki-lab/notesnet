@@ -70,7 +70,7 @@ type NoteRevision {
 
 type Query {
   note(id: ID!): Note
-  recentNotes: [Note!]!
+  recentNotes(contentTypes: [String!]): [Note!]!
   viewer: Viewer!
 }
 

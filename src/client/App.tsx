@@ -8,6 +8,7 @@ import { ReplyContextProvider } from "./contexts/ReplyContext.tsx"
 import { PageLatestPosts } from "./pages/PageLatestPosts"
 import { PageLogin } from "./pages/PageLogin"
 import { PageNoteDetail } from "./pages/PageNoteDetail.tsx"
+import { PageTasks } from "./pages/PageTasks.tsx"
 
 import "./App.css"
 import { PageTreeUlDebug } from "./pages/PageTreeUlDebug.tsx"
@@ -47,6 +48,7 @@ export function App() {
                     <Routes>
                         <Route path="/" element={<PageLatestPosts />} />
                         <Route path="/notes/:noteId" element={<PageNoteDetail />} />
+                        <Route path="/tasks" element={<PageTasks />} />
                         <Route path="/debug/tree-ul" element={<PageTreeUlDebug />} />
                     </Routes>
                 </div>

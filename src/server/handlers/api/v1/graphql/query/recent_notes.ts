@@ -8,11 +8,19 @@ import { Note } from "../types/note.ts"
 builder.queryField("recentNotes", t =>
     t.drizzleField({
         type: [Note],
+        args: {
+            contentTypes: t.arg.stringList({ required: false }),
+        },
         resolve(query, root, args, ctx) {
             return db.query.notesTable.findMany({
                 ...query({
                     where: {
                         ...makeNotesWhereQueryObjectFromAuthorizedResult(ctx.authorized),
+                        ...(args.contentTypes != null && {
+                            latestRevision: {
+                                contentType: { in: args.contentTypes },
+                            },
+                        }),
                     },
                     with: {
                         latestRevision: {
